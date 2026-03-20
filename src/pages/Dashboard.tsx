@@ -7,8 +7,7 @@ import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
   Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard,
 } from 'lucide-react';
-import ValueToggleButton from '@/components/dashboard/ValueToggleButton';
-import { useValueVisibility } from '@/hooks/useValueVisibility';
+import { Settings } from 'lucide-react';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '@/hooks/useAuth';
