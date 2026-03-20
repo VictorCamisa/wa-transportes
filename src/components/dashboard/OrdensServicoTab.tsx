@@ -162,10 +162,10 @@ const OrdensServicoTab = () => {
           <p className="text-gray-500">{ordens.length} OS encontrada(s)</p>
         </div>
         <div className="flex gap-2 items-center">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter || "__all__"} onValueChange={v => setStatusFilter(v === "__all__" ? "" : v)}>
             <SelectTrigger className="w-44"><SelectValue placeholder="Todos os status" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="__all__">Todos</SelectItem>
               {Object.entries(STATUS_FLOW).map(([val, { label }]) => (
                 <SelectItem key={val} value={val}>{label}</SelectItem>
               ))}
