@@ -312,7 +312,7 @@ const Dashboard = () => {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <ValueToggleButton />
+            
 
             {(isAdmin || hasPermission('services_create')) && (
               <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
