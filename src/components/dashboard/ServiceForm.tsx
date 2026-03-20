@@ -148,7 +148,7 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
       };
 
       const { error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .insert([processedData]) as any);
 
       if (error) throw error;

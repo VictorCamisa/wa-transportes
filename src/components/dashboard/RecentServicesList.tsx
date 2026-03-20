@@ -16,7 +16,7 @@ const RecentServicesList = ({ showValues }: RecentServicesListProps) => {
     queryFn: async () => {
       console.log('RecentServicesList: Buscando últimos 10 serviços...');
       const { data, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('*')
         .order('data_servico', { ascending: false })
         .limit(10) as any);
@@ -37,7 +37,7 @@ const RecentServicesList = ({ showValues }: RecentServicesListProps) => {
     queryFn: async () => {
       console.log('RecentServicesList: Buscando contagem total REAL...');
       const { count, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('*', { count: 'exact', head: true }) as any);
       
       if (error) {

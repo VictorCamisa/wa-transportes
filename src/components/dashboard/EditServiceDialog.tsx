@@ -55,7 +55,7 @@ const EditServiceDialog = ({ service, open, onClose, onUpdate }: EditServiceDial
 
     try {
       const { error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .update({
           empresa: formData.empresa,
           solicitante: formData.solicitante || null,

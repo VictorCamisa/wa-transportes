@@ -40,7 +40,7 @@ export const downloadFile = (content: string, filename: string, type: string) =>
 
 // Headers em português para cada tabela
 const tableHeaders: Record<string, Record<string, string>> = {
-  custos_maio: {
+  custos: {
     id: 'ID',
     description: 'Descrição',
     value: 'Valor',
@@ -142,7 +142,7 @@ export const getTableCount = async (tableName: string): Promise<number> => {
 
 // Exportar todas as tabelas
 export const exportAllTables = async (format: 'csv' | 'json'): Promise<{ success: boolean; results: Record<string, { count: number; error?: string }> }> => {
-  const tables = ['custos_maio', 'servicos', 'profiles', 'user_permissions'];
+  const tables = ['custos', 'servicos', 'profiles', 'user_permissions'];
   const results: Record<string, { count: number; error?: string }> = {};
 
   for (const table of tables) {

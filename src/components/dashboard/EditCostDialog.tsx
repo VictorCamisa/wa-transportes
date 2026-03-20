@@ -49,7 +49,7 @@ const EditCostDialog = ({ cost, open, onClose, onUpdate }: EditCostDialogProps) 
 
     try {
       const { error } = await (supabase
-        .from('custos_maio' as any)
+        .from('custos' as any)
         .update({
           descricao: formData.descricao,
           data_vencimento: formatDateForDatabase(formData.data_vencimento),

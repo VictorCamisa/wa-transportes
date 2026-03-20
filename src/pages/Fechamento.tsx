@@ -44,7 +44,7 @@ const Fechamento = () => {
     const fetchEmpresas = async () => {
       try {
         const { data, error } = await (supabase
-          .from('servicos_maio' as any)
+          .from('servicos' as any)
           .select('empresa')
           .order('empresa') as any);
 
@@ -75,7 +75,7 @@ const Fechamento = () => {
 
     try {
       const { data, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('*')
         .eq('empresa', selectedEmpresa)
         .gte('data_servico', formatDateForDatabase(startDate))

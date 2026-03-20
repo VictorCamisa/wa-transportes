@@ -15,7 +15,7 @@ const RecentCostsList = ({ showValues }: RecentCostsListProps) => {
     queryKey: ['recent-costs'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('custos_maio' as any)
+        .from('custos' as any)
         .select('*')
         .order('created_at', { ascending: false })
         .limit(10) as any);

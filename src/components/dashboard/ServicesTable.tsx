@@ -57,7 +57,7 @@ const ServicesTable = ({ data, loading, onRefresh }: ServicesTableProps) => {
 
     try {
       const { error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .delete()
         .eq('id', serviceId) as any);
 

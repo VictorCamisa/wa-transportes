@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, TrendingUp, Users, DollarSign, FileText, Eye, EyeOff, Truck, Calendar, Menu, LogOut, Home } from 'lucide-react';
+import { Plus, TrendingUp, Users, DollarSign, FileText, Eye, EyeOff, Truck, Calendar, Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin } from 'lucide-react';
 import ValueToggleButton from '@/components/dashboard/ValueToggleButton';
 import { useValueVisibility } from '@/hooks/useValueVisibility';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
@@ -27,6 +27,11 @@ import CreateChecklistUsers from '@/components/dashboard/CreateChecklistUsers';
 import ResetOxinhoPassword from '@/components/dashboard/ResetOxinhoPassword';
 import FechamentoTab from '@/components/dashboard/FechamentoTab';
 import ProtectedComponent from '@/components/ProtectedComponent';
+import MotoristasTab from '@/components/dashboard/MotoristasTab';
+import VeiculosTab from '@/components/dashboard/VeiculosTab';
+import OrdensServicoTab from '@/components/dashboard/OrdensServicoTab';
+import TabelaPrecosTab from '@/components/dashboard/TabelaPrecosTab';
+import LiveMap from '@/components/dashboard/LiveMap';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface DashboardFilters {
@@ -46,6 +51,11 @@ const getAllTabItems = () => [
   { id: 'fechamento', label: 'Fechamento', icon: Calendar, permission: 'dashboard_view' },
   { id: 'users', label: 'Usuários', icon: Users, permission: 'users_manage' },
   { id: 'checklist', label: 'Checklist', icon: Truck, permission: 'checklist_access' },
+  { id: 'motoristas', label: 'Motoristas', icon: UserCheck, permission: 'users_manage' },
+  { id: 'veiculos', label: 'Veículos', icon: Car, permission: 'users_manage' },
+  { id: 'ordens_servico', label: 'Ordens de Serviço', icon: ClipboardList, permission: 'services_view' },
+  { id: 'tabela_precos', label: 'Tabela de Preços', icon: DollarSign, permission: 'users_manage' },
+  { id: 'mapa', label: 'Mapa ao Vivo', icon: MapPin, permission: 'dashboard_view' },
 ];
 
 const Dashboard = () => {
@@ -53,37 +63,18 @@ const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
   const { hasPermission, isAdmin, loading: permissionsLoading } = usePermissions();
   
-  // SOLUÇÃO TEMPORÁRIA: Verificação direta para usuários com acesso ao checklist
-  const checklistUsers = ['gilberto@watransportes.com', 'michel@watransportes.com', 'fico@watransportes.com', 'oxinho@watransportes.com'];
-  const isGilberto = checklistUsers.includes(profile?.email || '');
-  
-  // Filtrar abas baseado nas permissões OU ser Gilberto
+  // Filtrar abas baseado nas permissões
   const tabItems = getAllTabItems().filter(tab => {
-    if (isGilberto && tab.id === 'checklist') return true;
     return isAdmin || hasPermission(tab.permission);
-  });
-  
-  console.log('Dashboard permissions debug:', {
-    profile: profile?.email,
-    isAdmin,
-    isGilberto,
-    permissionsLoading,
-    tabItems: tabItems.map(t => ({ id: t.id, permission: t.permission })),
-    hasChecklistAccess: hasPermission('checklist_access')
   });
   
   // Definir aba inicial baseada nas permissões do usuário
   const getInitialTab = () => {
-    // SOLUÇÃO DIRETA: Se é Gilberto, vai para checklist
-    if (isGilberto) {
-      return 'checklist';
-    }
-    
     // Se é admin, começa no dashboard
     if (isAdmin) return 'dashboard';
-    
+
     // Se só tem acesso ao checklist, vai direto pro checklist
-    if (hasPermission('checklist_access') && !hasPermission('dashboard_view') && !hasPermission('services_view')) {
+    if (!isAdmin && hasPermission('checklist_access') && !hasPermission('dashboard_view') && !hasPermission('services_view')) {
       return 'checklist';
     }
     
@@ -119,48 +110,31 @@ const Dashboard = () => {
 
   // Atualizar aba quando as permissões carregarem
   useEffect(() => {
-    console.log('Effect disparado:', { 
-      profile: profile?.email, 
-      isGilberto,
-      tabItemsLength: tabItems.length, 
-      activeTab, 
-      permissionsLoading 
-    });
-    
     if (profile && !permissionsLoading) {
-      // FORÇA o redirecionamento para Gilberto
-      if (isGilberto && activeTab !== 'checklist') {
-        console.log('Forçando Gilberto para checklist');
-        setActiveTab('checklist');
-        return;
-      }
-      
       if (tabItems.length > 0) {
         const urlParams = new URLSearchParams(window.location.search);
         const tabFromUrl = urlParams.get('tab');
-        
+
         // Se tem aba na URL e o usuário tem permissão, usa ela
         if (tabFromUrl) {
           const requestedTab = getAllTabItems().find(tab => tab.id === tabFromUrl);
-          if (requestedTab && (isAdmin || hasPermission(requestedTab.permission) || (isGilberto && tabFromUrl === 'checklist'))) {
-            console.log('Usando aba da URL:', tabFromUrl);
+          if (requestedTab && (isAdmin || hasPermission(requestedTab.permission))) {
             setActiveTab(tabFromUrl);
             return;
           }
         }
-        
+
         // Se a aba atual não está mais disponível, mudar para uma válida
         const currentTabAvailable = tabItems.some(tab => tab.id === activeTab);
         if (!currentTabAvailable && tabItems.length > 0) {
           const initialTab = getInitialTab();
-          console.log('Mudando para aba inicial:', initialTab);
           if (initialTab) {
             setActiveTab(initialTab);
           }
         }
       }
     }
-  }, [profile, isAdmin, isGilberto, hasPermission, tabItems, permissionsLoading]);
+  }, [profile, isAdmin, hasPermission, tabItems, permissionsLoading]);
   const [isServiceFormOpen, setIsServiceFormOpen] = useState(false);
   const [isCostFormOpen, setIsCostFormOpen] = useState(false);
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
@@ -185,15 +159,6 @@ const Dashboard = () => {
     }
   }, [user, loading, navigate]);
 
-  // Debug: adicionar logs para entender o problema
-  useEffect(() => {
-    console.log('Dashboard Debug:', {
-      profile: profile?.email,
-      isAdmin,
-      tabItems: tabItems.map(t => t.id),
-      activeTab
-    });
-  }, [profile, isAdmin, tabItems, activeTab]);
 
   const handleLogout = async () => {
     try {
@@ -233,9 +198,8 @@ const Dashboard = () => {
   };
 
   const handleTabChange = (tab: string) => {
-    // Verificar se o usuário tem permissão para esta aba OU é Gilberto tentando acessar checklist
     const tabItem = getAllTabItems().find(t => t.id === tab);
-    if (tabItem && (isAdmin || hasPermission(tabItem.permission) || (isGilberto && tab === 'checklist'))) {
+    if (tabItem && (isAdmin || hasPermission(tabItem.permission))) {
       setActiveTab(tab);
       setIsMobileMenuOpen(false);
     }
@@ -300,20 +264,20 @@ const Dashboard = () => {
         );
       case 'checklist':
         return <ChecklistForm />;
+      case 'motoristas':
+        return <MotoristasTab />;
+      case 'veiculos':
+        return <VeiculosTab />;
+      case 'ordens_servico':
+        return <OrdensServicoTab />;
+      case 'tabela_precos':
+        return <TabelaPrecosTab />;
+      case 'mapa':
+        return <LiveMap />;
       default:
         return null;
     }
   };
-
-  console.log('Dashboard - Estado atual:', { 
-    user: !!user, 
-    loading, 
-    permissionsLoading,
-    profile: profile?.email, 
-    activeTab, 
-    tabItemsCount: tabItems.length,
-    tabItemsIds: tabItems.map(t => t.id)
-  });
 
   if (loading || permissionsLoading) {
     return (
@@ -327,13 +291,11 @@ const Dashboard = () => {
   }
 
   if (!user || !profile) {
-    console.log('Usuário ou perfil não encontrado, renderizando null');
     return null;
   }
 
   // Se ainda está carregando permissões, mostrar loading
   if (permissionsLoading) {
-    console.log('Ainda carregando permissões...');
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
@@ -346,7 +308,6 @@ const Dashboard = () => {
 
   // Se o usuário não tem nenhuma aba disponível, mostrar mensagem
   if (tabItems.length === 0) {
-    console.log('Usuário sem permissões, mostrando tela de acesso limitado');
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center max-w-md">
