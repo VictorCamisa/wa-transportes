@@ -55,6 +55,7 @@ const NAV_ITEMS = [
   { id: 'checklist',      label: 'Checklist',           icon: Truck,           permission: 'checklist_access' },
   { id: 'mapa',           label: 'Mapa ao Vivo',        icon: MapPin,          permission: 'dashboard_view' },
   { id: 'users',          label: 'Usuários',            icon: Users,           permission: 'users_manage' },
+  { id: 'configuracoes',  label: 'Configurações',       icon: Settings,        permission: 'users_manage' },
 ];
 
 const Dashboard = () => {
