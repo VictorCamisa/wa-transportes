@@ -180,6 +180,18 @@ const Dashboard = () => {
             <UsersList />
           </div>
         );
+      case 'configuracoes':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-800">Configurações</h2>
+              <p className="text-sm text-slate-500 mt-0.5">Configurações gerais do sistema</p>
+            </div>
+            <div className="bg-white rounded-lg border p-6">
+              <p className="text-slate-500">Página de configurações em construção.</p>
+            </div>
+          </div>
+        );
       default:
         return null;
     }

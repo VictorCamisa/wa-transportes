@@ -182,7 +182,6 @@ const UserForm = ({ onClose, onUserCreated }: UserFormProps) => {
           .from('profiles')
           .update({
             username: uniqueUsername,
-            role: formData.role
           })
           .eq('id', authData.user.id);
 
