@@ -105,7 +105,7 @@ export const useCostForm = (onClose: () => void) => {
       console.log('Dados a serem inseridos:', insertData);
 
       const { data, error } = await (supabase
-        .from('custos_maio' as any)
+        .from('custos' as any)
         .insert([insertData])
         .select() as any);
 

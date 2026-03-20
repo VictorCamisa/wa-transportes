@@ -41,7 +41,7 @@ const ViewCosts = () => {
     queryFn: async () => {
       console.log('Buscando custos...');
       const { data, error } = await (supabase
-        .from('custos_maio' as any)
+        .from('custos' as any)
         .select('*')
         .order('data_vencimento', { ascending: false }) as any);
 
@@ -65,7 +65,7 @@ const ViewCosts = () => {
 
     try {
       const { error } = await (supabase
-        .from('custos_maio' as any)
+        .from('custos' as any)
         .delete()
         .eq('id', costId) as any);
 

@@ -9,6 +9,7 @@ import { Plus, Search, Filter } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { usePermissions } from '@/hooks/usePermissions';
 import ServicesTable from './ServicesTable';
 import ServiceForm from './ServiceForm';
 
@@ -22,7 +23,7 @@ const fetchAllServicesWithFilters = async (searchTerm: string, selectedEmpresa: 
 
   while (hasMore) {
     let query = (supabase
-      .from('servicos_maio' as any)
+      .from('servicos' as any)
       .select('*')
       .order('data_servico', { ascending: false })
       .range(offset, offset + pageSize - 1)) as any;
@@ -69,6 +70,7 @@ const fetchAllServicesWithFilters = async (searchTerm: string, selectedEmpresa: 
 
 const ViewServices = () => {
   const { profile } = useAuth();
+  const { hasPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmpresa, setSelectedEmpresa] = useState('');
   const [selectedMes, setSelectedMes] = useState('');
@@ -88,7 +90,7 @@ const ViewServices = () => {
     queryKey: ['services-total-count'],
     queryFn: async () => {
       const { count, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('*', { count: 'exact', head: true }) as any);
       
       if (error) throw error;
@@ -101,7 +103,7 @@ const ViewServices = () => {
     queryKey: ['empresas'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('empresa')
         .order('empresa') as any);
       
@@ -117,8 +119,8 @@ const ViewServices = () => {
     setDialogOpen(false);
   };
 
-  // LÓGICA CORRIGIDA: Admin OU Paula podem criar serviços
-  const canCreateService = profile?.role === 'admin' || profile?.email === 'paula@watransportes.com';
+  // LÓGICA CORRIGIDA: Admin OU usuário com permissão pode criar serviços
+  const canCreateService = profile?.role === 'admin' || hasPermission('services_create');
 
   console.log('ViewServices - canCreateService:', canCreateService, 'profile:', profile);
 

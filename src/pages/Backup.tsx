@@ -20,7 +20,7 @@ interface TableInfo {
 const Backup = () => {
   const { user, loading: authLoading } = useAuth();
   const [tables, setTables] = useState<TableInfo[]>([
-    { name: 'custos_maio', label: 'Custos', description: 'Todos os custos registrados', count: 0 },
+    { name: 'custos', label: 'Custos', description: 'Todos os custos registrados', count: 0 },
     { name: 'servicos', label: 'Serviços', description: 'Todos os serviços prestados', count: 0 },
     { name: 'profiles', label: 'Perfis', description: 'Perfis de usuários', count: 0 },
     { name: 'user_permissions', label: 'Permissões', description: 'Permissões de usuários', count: 0 },

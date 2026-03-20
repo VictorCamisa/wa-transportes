@@ -12,6 +12,8 @@ import { CalendarIcon, Truck } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ChecklistItem {
   item: string;
@@ -20,10 +22,12 @@ interface ChecklistItem {
 }
 
 const ChecklistForm = () => {
+  const { user } = useAuth();
   const [veiculo, setVeiculo] = useState('');
   const [placa, setPlaca] = useState('');
   const [motorista, setMotorista] = useState('');
   const [data, setData] = useState<Date>();
+  const [km, setKm] = useState('');
   
   const [checklist, setChecklist] = useState<ChecklistItem[]>([
     { item: 'Freio de mão', status: '', observacao: '' },
@@ -43,9 +47,9 @@ const ChecklistForm = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!veiculo || !placa || !motorista || !data) {
       toast({
         title: "Campos obrigatórios",
@@ -65,12 +69,46 @@ const ChecklistForm = () => {
       return;
     }
 
-    toast({
-      title: "Checklist salvo com sucesso!",
-      description: "As informações do veículo foram registradas.",
-    });
-    
-    console.log('Checklist data:', { veiculo, placa, motorista, data, checklist });
+    try {
+      const checklistData = {
+        placa,
+        nome_motorista: motorista,
+        data: data ? format(data, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0],
+        km: km ? Number(km) : null,
+        items: checklist.map(item => ({
+          item: item.item,
+          status: item.status,
+          observacao: item.observacao
+        })),
+        criado_por: user?.id || null
+      };
+
+      const { error } = await (supabase
+        .from('checklists' as any)
+        .insert([checklistData]) as any);
+
+      if (error) throw error;
+
+      toast({
+        title: "Checklist salvo com sucesso!",
+        description: "As informações do veículo foram registradas no banco de dados.",
+      });
+
+      // Reset form
+      setVeiculo('');
+      setPlaca('');
+      setMotorista('');
+      setData(undefined);
+      setKm('');
+      setChecklist(prev => prev.map(item => ({ ...item, status: '', observacao: '' })));
+    } catch (error) {
+      console.error('Erro ao salvar checklist:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o checklist. Tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -139,6 +177,17 @@ const ChecklistForm = () => {
                   value={motorista}
                   onChange={(e) => setMotorista(e.target.value)}
                   placeholder="Nome do motorista"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="km">KM Atual</Label>
+                <Input
+                  id="km"
+                  type="number"
+                  value={km}
+                  onChange={(e) => setKm(e.target.value)}
+                  placeholder="Quilometragem atual"
                 />
               </div>
             </div>

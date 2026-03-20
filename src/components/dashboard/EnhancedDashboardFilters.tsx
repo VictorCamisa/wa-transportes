@@ -28,7 +28,7 @@ const EnhancedDashboardFilters = ({ filters, onFiltersChange, onClearFilters }: 
     queryKey: ['empresas-dashboard'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('empresa')
         .order('empresa') as any);
       
@@ -44,7 +44,7 @@ const EnhancedDashboardFilters = ({ filters, onFiltersChange, onClearFilters }: 
     queryKey: ['cidades-dashboard'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('servicos_maio' as any)
+        .from('servicos' as any)
         .select('cidade')
         .order('cidade') as any);
       

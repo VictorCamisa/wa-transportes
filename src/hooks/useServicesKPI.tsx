@@ -61,7 +61,7 @@ const fetchAllServices = async (filters?: DashboardFilters) => {
 
   while (hasMore) {
     let servicesQuery = (supabase
-      .from('servicos_maio' as any)
+      .from('servicos' as any)
       .select('*')
       .range(offset, offset + pageSize - 1)) as any;
 
@@ -134,7 +134,7 @@ export const useServicesKPI = (filters?: DashboardFilters) => {
 
         // Buscar dados dos custos com filtros corrigidos
         let costQuery = (supabase
-          .from('custos_maio') as any)
+          .from('custos') as any)
           .select('*');
 
         if (filters?.startDate) {

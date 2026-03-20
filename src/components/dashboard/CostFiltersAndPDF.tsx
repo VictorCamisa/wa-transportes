@@ -93,7 +93,7 @@ const CostFiltersAndPDF = () => {
       console.log('Data final formatada:', formattedEndDate);
 
       let query = (supabase
-        .from('custos_maio') as any)
+        .from('custos') as any)
         .select('*')
         .gte('data_vencimento', formattedStartDate)
         .lte('data_vencimento', formattedEndDate)
