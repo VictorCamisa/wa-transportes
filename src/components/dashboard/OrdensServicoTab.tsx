@@ -162,10 +162,10 @@ const OrdensServicoTab = () => {
           <p className="text-gray-500">{ordens.length} OS encontrada(s)</p>
         </div>
         <div className="flex gap-2 items-center">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter || "__all__"} onValueChange={v => setStatusFilter(v === "__all__" ? "" : v)}>
             <SelectTrigger className="w-44"><SelectValue placeholder="Todos os status" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="__all__">Todos</SelectItem>
               {Object.entries(STATUS_FLOW).map(([val, { label }]) => (
                 <SelectItem key={val} value={val}>{label}</SelectItem>
               ))}
@@ -197,20 +197,20 @@ const OrdensServicoTab = () => {
                   </div>
                   <div className="space-y-1">
                     <Label>Motorista</Label>
-                    <Select value={form.motorista_id} onValueChange={v => setForm(p => ({ ...p, motorista_id: v }))}>
+                    <Select value={form.motorista_id || "__none__"} onValueChange={v => setForm(p => ({ ...p, motorista_id: v === "__none__" ? "" : v }))}>
                       <SelectTrigger><SelectValue placeholder="Selecionar" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Nenhum</SelectItem>
+                        <SelectItem value="__none__">Nenhum</SelectItem>
                         {motoristas.map(m => <SelectItem key={m.id} value={m.id}>{m.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="col-span-2 space-y-1">
                     <Label>Veículo</Label>
-                    <Select value={form.veiculo_id} onValueChange={v => setForm(p => ({ ...p, veiculo_id: v }))}>
+                    <Select value={form.veiculo_id || "__none__"} onValueChange={v => setForm(p => ({ ...p, veiculo_id: v === "__none__" ? "" : v }))}>
                       <SelectTrigger><SelectValue placeholder="Selecionar" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Nenhum</SelectItem>
+                        <SelectItem value="__none__">Nenhum</SelectItem>
                         {veiculos.map(v => <SelectItem key={v.id} value={v.id}>{v.placa} — {v.tipo}</SelectItem>)}
                       </SelectContent>
                     </Select>
