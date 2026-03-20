@@ -171,7 +171,6 @@ const UserForm = ({ onClose, onUserCreated }: UserFormProps) => {
             id: authData.user.id,
             username: uniqueUsername,
             email: formData.email,
-            role: formData.role
           });
 
         if (profileError) {
