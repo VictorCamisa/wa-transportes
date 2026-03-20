@@ -17,19 +17,30 @@ export const usePermissions = () => {
   const { user, profile } = useAuth();
   const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasAdminRole, setHasAdminRole] = useState(false);
 
   useEffect(() => {
     const fetchPermissions = async () => {
       if (!user || !profile) {
         setPermissions([]);
+        setHasAdminRole(false);
         setLoading(false);
         return;
       }
 
       console.log('usePermissions - Iniciando busca para:', profile.email);
 
+      // Check user_roles table for admin role
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
+
+      const isAdminFromRoles = roles?.some(r => r.role === 'admin') || false;
+      setHasAdminRole(isAdminFromRoles);
+
       // Admin ou usuários com acesso total têm todas as permissões
-      if (profile.role === 'admin' || FULL_ACCESS_USERS.includes(profile.email)) {
+      if (isAdminFromRoles || FULL_ACCESS_USERS.includes(profile.email)) {
         console.log('Usuário com acesso total detectado');
         setPermissions([
           'dashboard_view',
@@ -75,7 +86,7 @@ export const usePermissions = () => {
 
   const hasPermission = (permission: string): boolean => {
     if (!profile) return false;
-    if (profile.role === 'admin' || FULL_ACCESS_USERS.includes(profile.email)) return true;
+    if (hasAdminRole || FULL_ACCESS_USERS.includes(profile.email)) return true;
     return permissions.includes(permission);
   };
 
@@ -88,6 +99,6 @@ export const usePermissions = () => {
     loading,
     hasPermission,
     hasAnyPermission,
-    isAdmin: profile?.role === 'admin' || (profile ? FULL_ACCESS_USERS.includes(profile.email) : false)
+    isAdmin: hasAdminRole || (profile ? FULL_ACCESS_USERS.includes(profile.email) : false)
   };
 };
