@@ -1,0 +1,523 @@
+
+W&A TRANSPORTES
+Análise de Sistema, Mercado & Roadmap para Versão Ultra Profissional
+Elaborado por VS Soluções  •  Março 2026  •  Confidencial
+
+SUMÁRIO EXECUTIVO
+O sistema atual da W&A Transportes é uma aplicação web funcional construída com React/TypeScript + Supabase, capaz de registrar serviços, controlar custos e gerar fechamentos mensais. Entretanto, trata-se de um sistema de controle interno básico — não um TMS (Transportation Management System) de mercado. Este documento mapeia o estado atual, posiciona o produto frente ao mercado de TMS e define o roadmap completo para transformar o sistema numa plataforma operacional profissional de alto valor para transportadoras de pequeno e médio porte.
+
+
+PARTE 1 — ESTADO ATUAL DO SISTEMA
+
+
+1.1  Stack Tecnológica
+O sistema foi construído inteiramente com a stack padrão da VS Soluções, garantindo manutenibilidade e velocidade de entrega:
+
+Camada
+Tecnologia
+Versão/Detalhe
+Status
+Frontend
+React + TypeScript
+Vite + Tailwind CSS
+Operacional
+UI Components
+shadcn/ui
+Radix UI base
+Operacional
+Backend/DB
+Supabase
+PostgreSQL + Auth
+Operacional
+Deploy/Build
+Lovable
+lovable.dev
+Operacional
+PDF Export
+jsPDF + autoTable
+Client-side
+Operacional
+Charts
+Recharts
+React charts
+Operacional
+State/Cache
+TanStack Query
+React Query v5
+Operacional
+
+
+1.2  Arquitetura do Sistema
+A arquitetura segue o padrão SPA (Single Page Application) com Backend-as-a-Service. O Supabase centraliza autenticação, banco de dados e autorização via Row Level Security (RLS). A navegação é gerenciada por React Router com proteção de rotas por permissão.
+
+Rota
+Descrição
+/
+Landing page pública com seções sobre a empresa, serviços e formulário de contato
+/login
+Autenticação via Supabase Auth — apenas sign-in, sem auto-cadastro
+/dashboard
+Painel central com abas contextuais por perfil de usuário
+/fechamento
+Geração de relatório de fechamento mensal por empresa com exportação PDF
+/backup
+Exportação de todas as tabelas do Supabase em CSV e JSON
+/backup-emergencia
+Rota protegida por chave para backup de emergência
+
+
+1.3  Módulos e Funcionalidades Existentes
+A. Dashboard & KPIs
+O módulo central exibe 8 KPIs em tempo real: Receita Total, Total de Custos, Lucro Bruto, Margem de Lucro, Total de Serviços, Ticket Médio, Custos Fixos e Custos Variáveis. Inclui filtros por período, empresa e cidade. Os valores podem ser ocultados com toggle (botão de privacidade). Gráficos de receita e custos são renderizados com Recharts.
+B. Lançamento de Serviços
+Formulário completo para registro de serviços com os campos: Empresa, Solicitante, Descrição do Serviço, Cidade, Tipo de Veículo (MOTO/CARRO/VUC/3/4/TRUCK/CARRETA/CAM), Veículo, Motorista, Valor, Data, CT-e, NF, Frete (Fracionado/Integral) e Seguro. Possui validação de inputs, sanitização anti-XSS e rate limiting client-side.
+C. Gestão de Custos
+Cadastro de custos operacionais com categorização entre fixos e variáveis. Filtros avançados com exportação para PDF incluindo tabelas formatadas. Os custos alimentam diretamente os KPIs de margem e lucratividade.
+D. Fechamento Mensal
+Módulo de fechamento por empresa e período com geração de relatório PDF via jsPDF. Inclui função de correção de consistência de dados e visualização de serviços filtrados por cliente.
+E. Checklist de Veículos
+Formulário de checklist operacional para motoristas com 7 itens (freio de mão, freio de pé, luzes, KM, pneus, água, óleo). Status binário: funciona / não funciona, com campo de observação por item. Acesso restrito por e-mail (lista hardcoded).
+F. Gestão de Usuários e Permissões
+Sistema de permissões granular com roles (admin/user) e permissões individuais: dashboard_view, services_create, services_view, costs_create, costs_view, checklist_access, users_manage. Usuários com acesso total definidos via lista hardcoded no código.
+G. Backup e Exportação
+Exportação das tabelas principais em CSV e JSON. Backup de emergência protegido por chave de URL. Suporte a UTF-8 com BOM para compatibilidade com Excel brasileiro.
+
+1.4  Modelo de Dados (Supabase)
+O banco de dados principal possui as seguintes tabelas identificadas nas migrations:
+Tabela
+Campos Principais
+Finalidade
+servicos_maio
+empresa, solicitante, servico, cidade, tipo_veiculo, veiculo, motorista, valor_texto, valor_numerico, ct_e, nf, frete, seguro, data_servico
+Registro de todos os serviços prestados
+custos_maio
+description, value, date, category, payment_method, user_id
+Controle de custos operacionais
+profiles
+username, email, role, avatar_url
+Perfis dos usuários autenticados
+user_roles
+user_id, role
+Controle de papel admin/user
+user_permissions
+user_id, permission
+Permissões granulares por usuário
+
+
+ATENÇÃO
+O nome da tabela "servicos_maio" indica origem histórica de importação manual de planilha. Contém dados reais da operação (clientes como AUTOLIV, HYDROSTEC, MUBEA, IFF, PISANI, GV, RECICLAGEM). A tabela nunca foi renomeada para um nome genérico, o que é uma fragilidade arquitetural.
+
+
+PARTE 2 — ANÁLISE DE GAPS: O QUE FALTA
+
+
+2.1  Mapa de Gaps por Criticidade
+Avaliação sistematizada das ausências em relação a um TMS operacional profissional:
+
+Gap Identificado
+Criticidade
+Impacto Operacional
+Rastreamento de cargas em tempo real
+CRÍTICO
+Sem visibilidade do status das entregas
+Gestão de motoristas e frotas
+CRÍTICO
+Sem controle de disponibilidade, CNH, manutenção
+Ordens de serviço (OS) formais
+CRÍTICO
+Sem fluxo de OS: criação → aceite → execução → entrega
+Cálculo automático de frete
+CRÍTICO
+Valores inseridos manualmente, sem tabela de preços
+Portal do cliente
+CRÍTICO
+Clientes não têm acesso a status ou histórico
+Gestão de CT-e e NF-e (SEFAZ)
+ALTO
+CT-e inserido manualmente, sem validação ou emissão
+Integração com transportadoras parceiras
+ALTO
+Sem cotação ou despacho automático para terceiros
+Tabela de preços e precificação dinâmica
+ALTO
+Sem regras de preço por zona, peso, tipo de carga
+Notificações automáticas (WhatsApp/e-mail)
+ALTO
+Sem alertas de coleta, entrega ou desvio de rota
+Gestão de ocorrências e sinistros
+ALTO
+Sem registro formal de avarias, atrasos ou perdas
+Comprovante de entrega (POD)
+ALTO
+Motorista não registra entrega com foto/assinatura
+Otimização de rotas
+MÉDIO
+Sem sugestão de rota ou sequenciamento de paradas
+App mobile para motoristas
+MÉDIO
+Checklist apenas via web, sem GPS/câmera integrada
+RLS permissivo no Supabase
+MÉDIO
+Políticas RLS precisam auditoria (padrão VS)
+Controle de carga e capacidade
+MÉDIO
+Sem peso, volume ou cubagem por serviço
+Dashboard financeiro avançado
+MÉDIO
+KPIs básicos presentes, faltam análise de rentabilidade por rota/cliente
+Permissões hardcoded no código
+MELHORIA
+Lista de e-mails admin no código-fonte — inseguro
+Nome da tabela "servicos_maio"
+MELHORIA
+Nome legado dificulta evolução e manutenção
+Checklist sem persistência no banco
+MELHORIA
+Checklist não salva no Supabase — apenas log no console
+Ausência de multi-tenancy
+MELHORIA
+Sistema serve apenas 1 transportadora — sem reuso
+
+
+2.2  Diagnóstico por Dimensão
+Dimensão
+Score Atual
+Comentário
+Segurança
+5/10
+RLS presente mas provavelmente permissivo; lista de admins hardcoded; rate limit só no client
+Operação Logística
+2/10
+Lançamento manual de serviços sem fluxo de OS, sem rastreio, sem POD
+Financeiro/Fiscal
+4/10
+KPIs e fechamento funcionais; CT-e e NF-e sem integração SEFAZ
+Gestão de Frota
+1/10
+Apenas checklist básico offline sem persistência real
+Experiência do Motorista
+1/10
+Sem app mobile, sem GPS, sem comprovante digital
+Experiência do Cliente
+0/10
+Clientes não têm nenhum acesso ao sistema
+Analytics & BI
+4/10
+KPIs básicos funcionais; faltam análise de rentabilidade por rota/veículo/motorista
+Arquitetura / Escalabilidade
+4/10
+Stack sólida (React + Supabase); schema legado; sem multi-tenancy
+
+
+PARTE 3 — ANÁLISE DE MERCADO
+
+
+3.1  Contexto do Mercado de TMS no Brasil
+O mercado global de TMS está projetado para crescer de USD 15 bilhões em 2025 para USD 40 bilhões em 2035. No Brasil, o cenário é específico: transportadoras de pequeno e médio porte (que representam a maioria do mercado) utilizam planilhas Excel, WhatsApp e sistemas legados desconectados. Os líderes globais (Oracle, SAP, Manhattan Associates) são inacessíveis para PMEs por custo e complexidade.
+Isso cria uma oportunidade clara para soluções verticais e acessíveis como a que a VS Soluções pode construir — especialmente com diferenciais brasileiros: integração CT-e/NF-e, SEFAZ, rastreamento com operadoras nacionais e alertas via WhatsApp.
+
+3.2  Posicionamento do Sistema Atual vs. Mercado
+Funcionalidade
+W&A Atual
+Loggi/iFood Motoboy
+Transporter/NDD
+Oracle TMS
+Lançamento de serviços
+SIM
+SIM
+SIM
+SIM
+Controle financeiro/custos
+SIM
+NÃO
+SIM
+SIM
+Fechamento/relatório PDF
+SIM
+NÃO
+SIM
+SIM
+Rastreamento em tempo real
+NÃO
+SIM
+SIM
+SIM
+Gestão de frota/motoristas
+NÃO
+PARCIAL
+SIM
+SIM
+Portal do cliente
+NÃO
+SIM
+SIM
+SIM
+CT-e / NF-e (SEFAZ)
+NÃO
+NÃO
+SIM
+SIM
+Alertas WhatsApp/SMS
+NÃO
+SIM
+SIM
+SIM
+App mobile motorista
+NÃO
+SIM
+SIM
+SIM
+Otimização de rotas
+NÃO
+SIM
+SIM
+SIM
+Acessibilidade para PMEs
+ALTA
+ALTA
+MEDIA
+BAIXA
+
+
+OPORTUNIDADE
+O nicho de ouro para a VS Soluções é o TMS para transportadoras de pequeno e médio porte no Brasil, com diferenciais brasileiros (CT-e, NF-e, WhatsApp, Correios/Jadlog), preço acessível (R$500–2.000/mês) e implementação rápida. O sistema atual da W&A é o MVP perfeito para evoluir nessa direção.
+
+
+PARTE 4 — ROADMAP: VERSÃO ULTRA PROFISSIONAL
+
+
+4.1  Visão do Produto
+"VS Transportes OS" — O Sistema Operacional para Transportadoras PME do Brasil
+Uma plataforma SaaS multi-tenant que substitui planilhas, WhatsApp operacional e sistemas legados com um TMS completo, acessível, com diferenciais brasileiros nativos: CT-e, NF-e, rastreamento nacional, alertas WhatsApp e app mobile para motoristas.
+
+
+4.2  Arquitetura da Versão Pro
+A versão profissional mantém o core stack atual (React + Supabase) e adiciona camadas específicas:
+Componente
+Tecnologia
+Função
+Core Web (atual)
+React + TypeScript + Supabase
+Dashboard, gestão, analytics, admin
+App Mobile Motorista
+React Native ou PWA avançado
+OS, checklist, GPS, POD, fotos
+Portal do Cliente
+Next.js ou subdomínio React
+Rastreamento, histórico, NFs, solicitações
+Automação WhatsApp
+N8N + Evolution API (VS stack)
+Notificações, confirmações, alertas
+Integ. Fiscal
+API SEFAZ + Webmania ou NFe.io
+CT-e e NF-e emissão/consulta
+Rastreamento GPS
+Google Maps Platform ou Mapbox
+Posição em tempo real, rota percorrida
+Otimização de Rotas
+Google Routes API ou OSRM
+Sequenciamento e otimização de paradas
+AI/Copiloto
+Claude API (Anthropic)
+Análise de rentabilidade, anomalias, insights
+Multi-tenancy
+Supabase RLS por tenant_id
+Isolamento completo entre transportadoras
+
+
+4.3  Módulos da Versão Ultra Profissional
+MÓDULO 1 — Core Operacional (Evolução do Atual)
+Reformulação e expansão do que já existe:
+Renomear tabelas e padronizar schema (servicos, custos, frotas, motoristas)
+Gestão completa de Ordens de Serviço com fluxo: Criação → Despacho → Aceite → Execução → Conclusão
+Cadastro formal de motoristas (CNH, vencimento, categoria, foto)
+Cadastro de veículos (placa, tipo, capacidade, documentação, seguro, CRLV)
+Checklist de veículos persistido no banco com histórico e alertas
+Tabela de preços configurável por tipo de serviço, zona, peso e cliente
+Cálculo automático de frete com base nas regras cadastradas
+Permissões 100% via banco — zero hardcoded no código
+
+MÓDULO 2 — Rastreamento e Visibilidade
+GPS em tempo real via app mobile do motorista
+Mapa interativo no dashboard com posição de todos os veículos ativos
+Histórico de rota por OS
+Alertas de desvio de rota, parada não programada e atraso
+ETA (tempo estimado de chegada) atualizado em tempo real
+Comprovante de Entrega Digital (POD) com foto, assinatura e geolocalização
+
+MÓDULO 3 — Portal do Cliente
+Acesso via subdomínio ou link dedicado por empresa contratante
+Rastreamento de cargas em andamento em tempo real
+Histórico completo de serviços com filtros e exportação
+Download de NFs, CT-es e comprovantes de entrega
+Solicitação de novos serviços diretamente pelo portal
+Painel de KPIs de performance da transportadora para o cliente
+
+MÓDULO 4 — Comunicação Automática (WhatsApp)
+Integração com Evolution API via N8N (stack VS nativa)
+Notificação automática ao motorista ao receber OS
+Notificação ao cliente: coleta confirmada, saída para entrega, entrega realizada
+Alerta interno: veículo parado há mais de X minutos, desvio de rota
+Relatório diário automático para gestores via WhatsApp
+Chatbot de rastreamento para clientes via WhatsApp com código de rastreio
+
+MÓDULO 5 — Fiscal (CT-e e NF-e)
+Integração com SEFAZ para consulta de CT-e por chave de acesso
+Emissão de CT-e via API (NFe.io, Webmania ou Focus NFe)
+Validação automática de NF-e vinculada ao serviço
+Auditoria fiscal: valores lançados vs. documentos fiscais
+Relatório de CT-es por período para conciliação
+
+MÓDULO 6 — Analytics e Inteligência
+Dashboard executivo com rentabilidade por cliente, rota, motorista e veículo
+Análise de ociosidade de frota por período
+Mapa de calor de destinos mais frequentes
+Previsão de faturamento baseada em histórico
+Detecção de anomalias: serviços com margem negativa, desvios de custo
+Copiloto AI (Claude API) para análise de rentabilidade e geração de insights em linguagem natural
+Exportação de BI para Power BI ou Google Looker Studio via CSV/API
+
+MÓDULO 7 — Gestão de Frota
+Controle de manutenções preventivas e corretivas com alertas por KM ou data
+Histórico completo de intervenções por veículo
+Controle de abastecimento com consumo médio e alertas de desvio
+Gestão de documentação: CRLV, seguro, tacógrafo, vistoria
+Score de desempenho por motorista (pontualidade, ocorrências, consumo)
+
+MÓDULO 8 — Multi-tenancy e SaaS
+Arquitetura multi-tenant com isolamento total via Supabase RLS por tenant_id
+Onboarding self-service: transportadora cria conta, configura e começa a usar
+Planos de assinatura: Starter (1 veículo), Pro (até 10), Enterprise (ilimitado)
+White-label: transportadoras podem ter o sistema com sua marca
+Painel de administração da VS Soluções para gestão de clientes/tenants
+
+4.4  Roadmap de Implementação
+Divisão em 4 fases priorizadas por impacto e dependência técnica:
+
+Fase
+Duração
+Entregáveis
+Resultado de Negócio
+FASE 1Fundação
+4–6 semanas
+Refatoração de schema, OS formal, motoristas/veículos no banco, checklist persistido, RLS auditado, permissões 100% via DB, tabela de preços
+Sistema estável e seguro como base para evolução
+FASE 2Visibilidade
+6–8 semanas
+App PWA mobile para motorista, GPS em tempo real, POD digital, portal do cliente básico, mapa no dashboard
+Diferencial imediato vs. concorrência local
+FASE 3Automação
+4–6 semanas
+WhatsApp automation (N8N + Evolution API), alertas automáticos, integração CT-e/NF-e via API fiscal, cálculo automático de frete
+Redução de trabalho manual em 60%+
+FASE 4Escala SaaS
+6–8 semanas
+Multi-tenancy completo, onboarding self-service, planos de assinatura, white-label, AI copiloto (Claude API), analytics avançado
+Produto escalável para 50+ transportadoras
+
+
+4.5  Precificação Sugerida (SaaS)
+
+
+STARTER
+PRO
+ENTERPRISE
+Preço/mês
+R$ 497
+R$ 997
+R$ 1.997+
+Veículos
+Até 3
+Até 15
+Ilimitado
+Motoristas
+Até 5
+Até 30
+Ilimitado
+Portal cliente
+NÃO
+SIM
+SIM + White-label
+WhatsApp automation
+NÃO
+SIM
+SIM
+GPS + Rastreamento
+NÃO
+SIM
+SIM
+CT-e / NF-e
+NÃO
+SIM
+SIM
+AI Copiloto
+NÃO
+NÃO
+SIM
+
+
+4.6  Decisões Críticas de Arquitetura
+DECISÃO 1
+Manter Supabase como backend. O Supabase com multi-tenancy via RLS é suficiente para escalar até centenas de tenants. Custo de migração para outro backend não justifica.
+
+
+DECISÃO 2
+App Mobile = PWA Progressivo (não React Native). PWA elimina App Store/Play Store, atualiza automaticamente e funciona offline. Para o caso de uso do motorista (checklist + GPS + foto), PWA é suficiente e mais rápido de lançar.
+
+
+DECISÃO 3
+WhatsApp via Evolution API + N8N (já é a stack VS). Zero custo adicional de plataforma. Integração nativa com o ecossistema VS Soluções.
+
+
+DECISÃO 4
+CT-e via API terceirizada (NFe.io ou Webmania). Integração fiscal direta com SEFAZ é complexa e requer certificado digital. APIs como NFe.io abstraem isso por R$50–200/mês por CNPJ — viável para PME.
+
+
+DECISÃO 5
+GPS via Geolocation API do browser + WebSocket para o backend. O app mobile do motorista usa a Geolocation API nativa (sem SDK de terceiros) e envia posição via WebSocket ao Supabase Realtime. Dashboard consome via subscription. Custo: apenas Maps API para renderização.
+
+
+PARTE 5 — AÇÕES IMEDIATAS
+
+
+5.1  Correções Urgentes (Fazer Antes de Qualquer Evolução)
+Independente do roadmap de evolução, estas correções devem ser feitas imediatamente no sistema atual:
+
+#
+Ação
+Prioridade
+Esforço
+1
+Remover lista de e-mails admin hardcoded do código (FULL_ACCESS_USERS array)
+URGENTE
+30min — mover para tabela user_roles no Supabase
+2
+Auditoria de RLS: verificar se usuários comuns conseguem acessar dados de outros
+URGENTE
+2h — review e fix das policies no Supabase Dashboard
+3
+Persistir checklist no Supabase (atualmente só faz console.log)
+ALTO
+3h — criar tabela checklists e conectar o form
+4
+Remover arquivo .env do repositório (credenciais expostas)
+ALTO
+15min — rotacionar keys no Supabase e git rm --cached
+5
+Renomear "servicos_maio" para "servicos" e criar migration de dados
+MÉDIO
+4h — migration SQL + atualizar todas as referências no frontend
+6
+Mover acesso a checklist por lista de e-mails para permissão via DB
+MÉDIO
+2h — adicionar permissão checklist_access no banco para cada user
+
+
+5.2  Conclusão
+O sistema atual da W&A Transportes representa um MVP funcional com valor real para a operação — especialmente o controle financeiro, KPIs e fechamento mensal. É uma base sólida que valida a dor do mercado.
+O gap entre o estado atual e um TMS profissional é significativo, mas totalmente endereçável com a stack e metodologia da VS Soluções. A vantagem competitiva real está em ser o primeiro produto de TMS nacional feito para PMEs com diferenciais brasileiros nativos, preço acessível e integração com o ecossistema de automação VS.
+A recomendação é clara: corrija os 6 pontos urgentes desta semana, priorize a Fase 1 do roadmap nas próximas 4 semanas, e use a W&A Transportes como cliente âncora e caso de uso para validar o produto antes de escalar via VS Escale.
+
+VS Soluções  •  Ecossistemas Digitais para PMEs  •  2026
+
+
