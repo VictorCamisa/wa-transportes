@@ -207,10 +207,10 @@ const OrdensServicoTab = () => {
                   </div>
                   <div className="col-span-2 space-y-1">
                     <Label>Veículo</Label>
-                    <Select value={form.veiculo_id} onValueChange={v => setForm(p => ({ ...p, veiculo_id: v }))}>
+                    <Select value={form.veiculo_id || "__none__"} onValueChange={v => setForm(p => ({ ...p, veiculo_id: v === "__none__" ? "" : v }))}>
                       <SelectTrigger><SelectValue placeholder="Selecionar" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Nenhum</SelectItem>
+                        <SelectItem value="__none__">Nenhum</SelectItem>
                         {veiculos.map(v => <SelectItem key={v.id} value={v.id}>{v.placa} — {v.tipo}</SelectItem>)}
                       </SelectContent>
                     </Select>
