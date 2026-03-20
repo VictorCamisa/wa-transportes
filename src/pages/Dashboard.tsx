@@ -7,8 +7,7 @@ import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
   Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard,
 } from 'lucide-react';
-import ValueToggleButton from '@/components/dashboard/ValueToggleButton';
-import { useValueVisibility } from '@/hooks/useValueVisibility';
+import { Settings } from 'lucide-react';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '@/hooks/useAuth';
@@ -56,13 +55,14 @@ const NAV_ITEMS = [
   { id: 'checklist',      label: 'Checklist',           icon: Truck,           permission: 'checklist_access' },
   { id: 'mapa',           label: 'Mapa ao Vivo',        icon: MapPin,          permission: 'dashboard_view' },
   { id: 'users',          label: 'Usuários',            icon: Users,           permission: 'users_manage' },
+  { id: 'configuracoes',  label: 'Configurações',       icon: Settings,        permission: 'users_manage' },
 ];
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, profile, loading, signOut } = useAuth();
   const { hasPermission, isAdmin, loading: permissionsLoading } = usePermissions();
-  const { valuesVisible: showValues } = useValueVisibility();
+  const showValues = true;
 
   const navItems = NAV_ITEMS.filter(item => isAdmin || hasPermission(item.permission));
 
@@ -178,6 +178,18 @@ const Dashboard = () => {
             {isAdmin && <CreateChecklistUsers />}
             {isAdmin && <ResetOxinhoPassword />}
             <UsersList />
+          </div>
+        );
+      case 'configuracoes':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-800">Configurações</h2>
+              <p className="text-sm text-slate-500 mt-0.5">Configurações gerais do sistema</p>
+            </div>
+            <div className="bg-white rounded-lg border p-6">
+              <p className="text-slate-500">Página de configurações em construção.</p>
+            </div>
           </div>
         );
       default:
@@ -313,7 +325,7 @@ const Dashboard = () => {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <ValueToggleButton />
+            
 
             {(isAdmin || hasPermission('services_create')) && (
               <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
