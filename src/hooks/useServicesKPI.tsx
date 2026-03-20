@@ -133,8 +133,8 @@ export const useServicesKPI = (filters?: DashboardFilters) => {
         const servicesData = await fetchAllServices(filters);
 
         // Buscar dados dos custos com filtros corrigidos
-        let costQuery = (supabase
-          .from('custos') as any)
+        let costQuery = (supabase as any)
+          .from('custos')
           .select('*');
 
         if (filters?.startDate) {
