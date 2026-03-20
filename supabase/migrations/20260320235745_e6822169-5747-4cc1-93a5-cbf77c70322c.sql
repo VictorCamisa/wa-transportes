@@ -1,0 +1,1 @@
+UPDATE public.profiles SET username = 'vendasdesolucoes1' WHERE id = '63d45abc-1d10-411e-85e8-6dd79c217749';
