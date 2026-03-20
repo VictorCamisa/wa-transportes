@@ -86,7 +86,7 @@ export const usePermissions = () => {
 
   const hasPermission = (permission: string): boolean => {
     if (!profile) return false;
-    if (profile.role === 'admin' || FULL_ACCESS_USERS.includes(profile.email)) return true;
+    if (hasAdminRole || FULL_ACCESS_USERS.includes(profile.email)) return true;
     return permissions.includes(permission);
   };
 
@@ -99,6 +99,6 @@ export const usePermissions = () => {
     loading,
     hasPermission,
     hasAnyPermission,
-    isAdmin: profile?.role === 'admin' || (profile ? FULL_ACCESS_USERS.includes(profile.email) : false)
+    isAdmin: hasAdminRole || (profile ? FULL_ACCESS_USERS.includes(profile.email) : false)
   };
 };
