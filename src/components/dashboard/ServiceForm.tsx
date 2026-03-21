@@ -22,6 +22,7 @@ interface ServiceData {
   motorista: string;
   valor_texto: string;
   data_servico: string;
+  tem_cte: boolean;
   ct_e: string;
   nf: string;
   frete: string;
@@ -39,6 +40,7 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
     motorista: '',
     valor_texto: '',
     data_servico: getCurrentDateForInput(),
+    tem_cte: false,
     ct_e: '',
     nf: '',
     frete: '',
