@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +23,7 @@ interface ServiceData {
   motorista: string;
   valor_texto: string;
   data_servico: string;
+  tem_cte: boolean;
   ct_e: string;
   nf: string;
   frete: string;
@@ -39,6 +41,7 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
     motorista: '',
     valor_texto: '',
     data_servico: getCurrentDateForInput(),
+    tem_cte: false,
     ct_e: '',
     nf: '',
     frete: '',
@@ -214,14 +217,25 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="ct_e">CT-e</Label>
-            <Input
-              id="ct_e"
-              value={formData.ct_e}
-              onChange={(e) => handleInputChange('ct_e', e.target.value)}
-              placeholder="Número do CT-e"
-              maxLength={50}
-            />
+            <div className="flex items-center gap-3">
+              <Label htmlFor="tem_cte">Possui CT-e?</Label>
+              <Switch
+                id="tem_cte"
+                checked={formData.tem_cte}
+                onCheckedChange={(checked) => {
+                  setFormData(prev => ({ ...prev, tem_cte: checked, ct_e: checked ? prev.ct_e : '' }));
+                }}
+              />
+            </div>
+            {formData.tem_cte && (
+              <Input
+                id="ct_e"
+                value={formData.ct_e}
+                onChange={(e) => handleInputChange('ct_e', e.target.value)}
+                placeholder="Número do CT-e"
+                maxLength={50}
+              />
+            )}
           </div>
           
           <div className="space-y-2">
