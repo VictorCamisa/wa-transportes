@@ -8,6 +8,8 @@ import {
   Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard,
 } from 'lucide-react';
 import { Settings } from 'lucide-react';
+import UsersManagement from '@/components/dashboard/UsersManagement';
+import SettingsPage from '@/components/dashboard/SettingsPage';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '@/hooks/useAuth';
