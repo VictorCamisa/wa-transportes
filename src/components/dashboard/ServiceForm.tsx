@@ -217,14 +217,25 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="ct_e">CT-e</Label>
-            <Input
-              id="ct_e"
-              value={formData.ct_e}
-              onChange={(e) => handleInputChange('ct_e', e.target.value)}
-              placeholder="Número do CT-e"
-              maxLength={50}
-            />
+            <div className="flex items-center gap-3">
+              <Label htmlFor="tem_cte">Possui CT-e?</Label>
+              <Switch
+                id="tem_cte"
+                checked={formData.tem_cte}
+                onCheckedChange={(checked) => {
+                  setFormData(prev => ({ ...prev, tem_cte: checked, ct_e: checked ? prev.ct_e : '' }));
+                }}
+              />
+            </div>
+            {formData.tem_cte && (
+              <Input
+                id="ct_e"
+                value={formData.ct_e}
+                onChange={(e) => handleInputChange('ct_e', e.target.value)}
+                placeholder="Número do CT-e"
+                maxLength={50}
+              />
+            )}
           </div>
           
           <div className="space-y-2">
