@@ -8,6 +8,8 @@ import {
   Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard,
 } from 'lucide-react';
 import { Settings } from 'lucide-react';
+import UsersManagement from '@/components/dashboard/UsersManagement';
+import SettingsPage from '@/components/dashboard/SettingsPage';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAuth } from '@/hooks/useAuth';
@@ -153,45 +155,8 @@ const Dashboard = () => {
       case 'ordens_servico': return <OrdensServicoTab />;
       case 'tabela_precos':  return <TabelaPrecosTab />;
       case 'mapa':           return <LiveMap />;
-      case 'users':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-slate-800">Gerenciamento de Usuários</h2>
-                <p className="text-sm text-slate-500 mt-0.5">Crie e gerencie usuários do sistema</p>
-              </div>
-              {(isAdmin || hasPermission('users_manage')) && (
-                <Dialog open={isUserFormOpen} onOpenChange={setIsUserFormOpen}>
-                  <DialogTrigger asChild>
-                    <Button size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Novo Usuário
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <UserForm onClose={() => setIsUserFormOpen(false)} />
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
-            {isAdmin && <CreateChecklistUsers />}
-            {isAdmin && <ResetOxinhoPassword />}
-            <UsersList />
-          </div>
-        );
-      case 'configuracoes':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-slate-800">Configurações</h2>
-              <p className="text-sm text-slate-500 mt-0.5">Configurações gerais do sistema</p>
-            </div>
-            <div className="bg-white rounded-lg border p-6">
-              <p className="text-slate-500">Página de configurações em construção.</p>
-            </div>
-          </div>
-        );
+      case 'users':          return <UsersManagement />;
+      case 'configuracoes':  return <SettingsPage />;
       default:
         return null;
     }
