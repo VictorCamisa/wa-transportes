@@ -30,7 +30,7 @@ import FechamentoTab from '@/components/dashboard/FechamentoTab';
 import MotoristasTab from '@/components/dashboard/MotoristasTab';
 import VeiculosTab from '@/components/dashboard/VeiculosTab';
 import OrdensServicoTab from '@/components/dashboard/OrdensServicoTab';
-import TabelaPrecosTab from '@/components/dashboard/TabelaPrecosTab';
+
 import LiveMap from '@/components/dashboard/LiveMap';
 import EmpresasTab from '@/components/dashboard/EmpresasTab';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
