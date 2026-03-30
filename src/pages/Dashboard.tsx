@@ -215,7 +215,6 @@ const Dashboard = () => {
       case 'motoristas':     return <MotoristasTab />;
       case 'veiculos':       return <VeiculosTab />;
       case 'ordens_servico': return <OrdensServicoTab />;
-      case 'tabela_precos':  return <TabelaPrecosTab />;
       case 'mapa':           return <LiveMap />;
       case 'users':          return <UsersManagement />;
       case 'configuracoes':  return <SettingsPage />;
