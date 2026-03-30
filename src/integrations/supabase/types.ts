@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      checklists: {
+        Row: {
+          created_at: string
+          criado_por: string | null
+          data: string
+          id: string
+          items: Json
+          km: number | null
+          nome_motorista: string
+          placa: string
+        }
+        Insert: {
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          id?: string
+          items?: Json
+          km?: number | null
+          nome_motorista: string
+          placa: string
+        }
+        Update: {
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          id?: string
+          items?: Json
+          km?: number | null
+          nome_motorista?: string
+          placa?: string
+        }
+        Relationships: []
+      }
       company_settings: {
         Row: {
           address: string | null
@@ -86,6 +119,42 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           zip_code?: string | null
+        }
+        Relationships: []
+      }
+      custos: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data_vencimento: string
+          descricao: string
+          forma_pagamento: string
+          id: string
+          tipo: string
+          valor_numerico: number
+          valor_texto: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data_vencimento: string
+          descricao: string
+          forma_pagamento: string
+          id?: string
+          tipo: string
+          valor_numerico: number
+          valor_texto: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data_vencimento?: string
+          descricao?: string
+          forma_pagamento?: string
+          id?: string
+          tipo?: string
+          valor_numerico?: number
+          valor_texto?: string
         }
         Relationships: []
       }
@@ -158,6 +227,169 @@ export type Database = {
         }
         Relationships: []
       }
+      motoristas: {
+        Row: {
+          categoria_cnh: string
+          cnh: string
+          created_at: string
+          id: string
+          nome: string
+          status: string
+          telefone: string | null
+          vencimento_cnh: string
+        }
+        Insert: {
+          categoria_cnh: string
+          cnh: string
+          created_at?: string
+          id?: string
+          nome: string
+          status?: string
+          telefone?: string | null
+          vencimento_cnh: string
+        }
+        Update: {
+          categoria_cnh?: string
+          cnh?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          status?: string
+          telefone?: string | null
+          vencimento_cnh?: string
+        }
+        Relationships: []
+      }
+      ordens_servico: {
+        Row: {
+          cidade_destino: string | null
+          cidade_origem: string | null
+          created_at: string
+          criado_por: string | null
+          data_aceite: string | null
+          data_conclusao: string | null
+          data_criacao: string | null
+          data_despacho: string | null
+          data_inicio_execucao: string | null
+          descricao: string | null
+          empresa: string | null
+          id: string
+          motorista_id: string | null
+          numero_os: string | null
+          status: string
+          valor_frete: number | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          cidade_destino?: string | null
+          cidade_origem?: string | null
+          created_at?: string
+          criado_por?: string | null
+          data_aceite?: string | null
+          data_conclusao?: string | null
+          data_criacao?: string | null
+          data_despacho?: string | null
+          data_inicio_execucao?: string | null
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          motorista_id?: string | null
+          numero_os?: string | null
+          status?: string
+          valor_frete?: number | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          cidade_destino?: string | null
+          cidade_origem?: string | null
+          created_at?: string
+          criado_por?: string | null
+          data_aceite?: string | null
+          data_conclusao?: string | null
+          data_criacao?: string | null
+          data_despacho?: string | null
+          data_inicio_execucao?: string | null
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          motorista_id?: string | null
+          numero_os?: string | null
+          status?: string
+          valor_frete?: number | null
+          veiculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordens_servico_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posicoes_gps: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          motorista_id: string | null
+          ordem_servico_id: string | null
+          veiculo_id: string | null
+          velocidade: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          motorista_id?: string | null
+          ordem_servico_id?: string | null
+          veiculo_id?: string | null
+          velocidade?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          motorista_id?: string | null
+          ordem_servico_id?: string | null
+          veiculo_id?: string | null
+          velocidade?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posicoes_gps_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posicoes_gps_ordem_servico_id_fkey"
+            columns: ["ordem_servico_id"]
+            isOneToOne: false
+            referencedRelation: "ordens_servico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posicoes_gps_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -194,6 +426,63 @@ export type Database = {
         }
         Relationships: []
       }
+      servicos: {
+        Row: {
+          cidade: string | null
+          created_at: string
+          ct_e: string | null
+          data_servico: string
+          empresa: string
+          frete: string | null
+          id: string
+          motorista: string | null
+          nf: string | null
+          seguro: string | null
+          servico: string | null
+          solicitante: string | null
+          tipo_veiculo: string | null
+          valor_numerico: number | null
+          valor_texto: string | null
+          veiculo: string | null
+        }
+        Insert: {
+          cidade?: string | null
+          created_at?: string
+          ct_e?: string | null
+          data_servico?: string
+          empresa: string
+          frete?: string | null
+          id?: string
+          motorista?: string | null
+          nf?: string | null
+          seguro?: string | null
+          servico?: string | null
+          solicitante?: string | null
+          tipo_veiculo?: string | null
+          valor_numerico?: number | null
+          valor_texto?: string | null
+          veiculo?: string | null
+        }
+        Update: {
+          cidade?: string | null
+          created_at?: string
+          ct_e?: string | null
+          data_servico?: string
+          empresa?: string
+          frete?: string | null
+          id?: string
+          motorista?: string | null
+          nf?: string | null
+          seguro?: string | null
+          servico?: string | null
+          solicitante?: string | null
+          tipo_veiculo?: string | null
+          valor_numerico?: number | null
+          valor_texto?: string | null
+          veiculo?: string | null
+        }
+        Relationships: []
+      }
       servicos_maio: {
         Row: {
           cidade: string | null
@@ -227,6 +516,39 @@ export type Database = {
           solicitante?: string | null
           valor_numerico?: number | null
           valor_texto?: string | null
+        }
+        Relationships: []
+      }
+      tabela_precos: {
+        Row: {
+          ativo: boolean
+          cidade_destino: string
+          cidade_origem: string
+          created_at: string
+          empresa: string | null
+          id: string
+          tipo_veiculo: string
+          valor_base: number
+        }
+        Insert: {
+          ativo?: boolean
+          cidade_destino: string
+          cidade_origem: string
+          created_at?: string
+          empresa?: string | null
+          id?: string
+          tipo_veiculo: string
+          valor_base: number
+        }
+        Update: {
+          ativo?: boolean
+          cidade_destino?: string
+          cidade_origem?: string
+          created_at?: string
+          empresa?: string | null
+          id?: string
+          tipo_veiculo?: string
+          valor_base?: number
         }
         Relationships: []
       }
@@ -271,6 +593,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      veiculos: {
+        Row: {
+          ano: number | null
+          capacidade_kg: number | null
+          created_at: string
+          crlv_vencimento: string | null
+          id: string
+          marca: string | null
+          modelo: string | null
+          motorista_id: string | null
+          placa: string
+          seguro_vencimento: string | null
+          status: string
+          tipo: string
+        }
+        Insert: {
+          ano?: number | null
+          capacidade_kg?: number | null
+          created_at?: string
+          crlv_vencimento?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motorista_id?: string | null
+          placa: string
+          seguro_vencimento?: string | null
+          status?: string
+          tipo: string
+        }
+        Update: {
+          ano?: number | null
+          capacidade_kg?: number | null
+          created_at?: string
+          crlv_vencimento?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motorista_id?: string | null
+          placa?: string
+          seguro_vencimento?: string | null
+          status?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "veiculos_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
