@@ -30,7 +30,7 @@ import FechamentoTab from '@/components/dashboard/FechamentoTab';
 import MotoristasTab from '@/components/dashboard/MotoristasTab';
 import VeiculosTab from '@/components/dashboard/VeiculosTab';
 import OrdensServicoTab from '@/components/dashboard/OrdensServicoTab';
-import TabelaPrecosTab from '@/components/dashboard/TabelaPrecosTab';
+
 import LiveMap from '@/components/dashboard/LiveMap';
 import EmpresasTab from '@/components/dashboard/EmpresasTab';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -67,7 +67,6 @@ const NAV_GROUPS = [
     items: [
       { id: 'costs',          label: 'Custos',             icon: DollarSign,    permission: 'costs_view' },
       { id: 'fechamento',     label: 'Fechamento',         icon: Calendar,      permission: 'dashboard_view' },
-      { id: 'tabela_precos',  label: 'Tabela de Preços',   icon: TrendingUp,    permission: 'users_manage' },
     ],
   },
   {
@@ -216,7 +215,6 @@ const Dashboard = () => {
       case 'motoristas':     return <MotoristasTab />;
       case 'veiculos':       return <VeiculosTab />;
       case 'ordens_servico': return <OrdensServicoTab />;
-      case 'tabela_precos':  return <TabelaPrecosTab />;
       case 'mapa':           return <LiveMap />;
       case 'users':          return <UsersManagement />;
       case 'configuracoes':  return <SettingsPage />;
