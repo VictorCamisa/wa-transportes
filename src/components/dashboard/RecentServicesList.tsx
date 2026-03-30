@@ -99,7 +99,7 @@ const RecentServicesList = () => {
                       </TableCell>
                       <TableCell className="text-xs sm:text-sm">{service.cidade || '-'}</TableCell>
                       <TableCell className="text-xs sm:text-sm font-medium">
-                        {showValues ? service.valor_texto : '***'}
+                        {service.valor_texto}
                       </TableCell>
                     </TableRow>
                   ))}
