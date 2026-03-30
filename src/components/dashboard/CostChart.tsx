@@ -59,7 +59,6 @@ const CostChart = ({ data, loading }: CostChartProps) => {
   ];
 
   const formatCurrency = (value: number) => {
-    if (!showValues) return '***';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
