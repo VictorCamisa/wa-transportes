@@ -81,7 +81,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.error('Erro inesperado no login:', error);
+      
       const errorMessage = 'Ocorreu um erro inesperado. Tente novamente';
       setError(errorMessage);
       toast({
