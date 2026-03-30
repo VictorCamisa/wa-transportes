@@ -64,7 +64,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, profile, loading, signOut } = useAuth();
   const { hasPermission, isAdmin, loading: permissionsLoading } = usePermissions();
-  const showValues = true;
+  
 
   const navItems = NAV_ITEMS.filter(item => isAdmin || hasPermission(item.permission));
 
