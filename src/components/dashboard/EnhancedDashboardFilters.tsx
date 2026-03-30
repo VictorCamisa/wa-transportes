@@ -25,7 +25,7 @@ interface EnhancedDashboardFiltersProps {
 const EnhancedDashboardFilters = ({ filters, onFiltersChange, onClearFilters }: EnhancedDashboardFiltersProps) => {
   // Buscar empresas únicas
   const { data: empresas } = useQuery({
-    queryKey: ['empresas-list'],
+    queryKey: ['empresas-names-only'],
     queryFn: async () => {
       const { data, error } = await (supabase
         .from('empresas' as any)
