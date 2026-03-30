@@ -113,6 +113,10 @@ const Dashboard = () => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setIsMobileOpen(false);
+    // Sync URL for shareable links
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({}, '', url.toString());
   };
 
   const handleLogout = async () => {
