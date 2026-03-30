@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
-  Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard,
+  Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard, Building2,
 } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import UsersManagement from '@/components/dashboard/UsersManagement';
@@ -35,6 +35,7 @@ import VeiculosTab from '@/components/dashboard/VeiculosTab';
 import OrdensServicoTab from '@/components/dashboard/OrdensServicoTab';
 import TabelaPrecosTab from '@/components/dashboard/TabelaPrecosTab';
 import LiveMap from '@/components/dashboard/LiveMap';
+import EmpresasTab from '@/components/dashboard/EmpresasTab';
 
 interface DashboardFilters {
   startDate: string;
@@ -47,6 +48,7 @@ interface DashboardFilters {
 
 const NAV_ITEMS = [
   { id: 'dashboard',      label: 'Dashboard',          icon: LayoutDashboard, permission: 'dashboard_view' },
+  { id: 'empresas',       label: 'Empresas',            icon: Building2,       permission: 'services_view' },
   { id: 'services',       label: 'Serviços',            icon: FileText,        permission: 'services_view' },
   { id: 'costs',          label: 'Custos',              icon: DollarSign,      permission: 'costs_view' },
   { id: 'ordens_servico', label: 'Ordens de Serviço',  icon: ClipboardList,   permission: 'services_view' },
@@ -146,6 +148,7 @@ const Dashboard = () => {
             </div>
           </div>
         );
+      case 'empresas':    return <EmpresasTab />;
       case 'services':    return <ViewServices />;
       case 'costs':       return <ViewCosts />;
       case 'fechamento':  return <FechamentoTab />;
