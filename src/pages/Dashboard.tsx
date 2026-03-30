@@ -135,7 +135,7 @@ const Dashboard = () => {
               onFiltersChange={setFilters}
               onClearFilters={() => setFilters({ startDate: '', endDate: '', empresa: '', tipoCusto: '', cidade: '', mes: '' })}
             />
-            <KPICards data={kpiData} loading={kpiLoading} showValues={showValues} />
+            <KPICards data={kpiData} loading={kpiLoading} />
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <RevenueChart data={revenueByClient || []} loading={kpiLoading} showValues={showValues} />
               <CostChart data={kpiData} loading={kpiLoading} showValues={showValues} />
