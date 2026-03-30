@@ -114,7 +114,7 @@ const RecentServicesList = () => {
                   <div className="flex justify-between items-start">
                     <h4 className="font-medium text-sm">{service.empresa}</h4>
                     <span className="text-xs text-green-600 font-medium">
-                      {showValues ? service.valor_texto : '***'}
+                      {service.valor_texto}
                     </span>
                   </div>
                   <p className="text-xs text-gray-600">

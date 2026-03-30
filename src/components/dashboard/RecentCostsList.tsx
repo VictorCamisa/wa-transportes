@@ -96,7 +96,7 @@ const RecentCostsList = () => {
                     </span>
                   </div>
                   <p className="text-xs font-medium text-green-600">
-                    Valor: {showValues ? cost.valor_texto : '***'}
+                    Valor: {cost.valor_texto}
                   </p>
                   <p className="text-xs text-gray-600">Pagamento: {cost.forma_pagamento}</p>
                   {cost.data_vencimento && (

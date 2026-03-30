@@ -93,7 +93,7 @@ const CostChart = ({ data, loading }: CostChartProps) => {
         <CardDescription>Proporção entre custos fixos e variáveis em maio</CardDescription>
       </CardHeader>
       <CardContent>
-        {showValues ? (
+        {chartData.some(d => d.value > 0) ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
