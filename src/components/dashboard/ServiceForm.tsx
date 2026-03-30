@@ -248,7 +248,7 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
                       />
                     </div>
                     {(empresas || [])
-                      .filter(e => e.nome.toLowerCase().includes(empresaSearch.toLowerCase()))
+                      .filter(e => e && e.nome && e.nome.toLowerCase().includes(empresaSearch.toLowerCase()))
                       .map((empresa) => (
                         <SelectItem key={empresa.id} value={empresa.nome}>
                           {empresa.nome}
