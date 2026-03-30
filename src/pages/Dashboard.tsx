@@ -137,8 +137,8 @@ const Dashboard = () => {
             />
             <KPICards data={kpiData} loading={kpiLoading} />
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <RevenueChart data={revenueByClient || []} loading={kpiLoading} showValues={showValues} />
-              <CostChart data={kpiData} loading={kpiLoading} showValues={showValues} />
+              <RevenueChart data={revenueByClient || []} loading={kpiLoading} />
+              <CostChart data={kpiData} loading={kpiLoading} />
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <RecentServicesList showValues={showValues} />
