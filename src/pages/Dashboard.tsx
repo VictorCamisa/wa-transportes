@@ -67,7 +67,6 @@ const NAV_GROUPS = [
     items: [
       { id: 'costs',          label: 'Custos',             icon: DollarSign,    permission: 'costs_view' },
       { id: 'fechamento',     label: 'Fechamento',         icon: Calendar,      permission: 'dashboard_view' },
-      { id: 'tabela_precos',  label: 'Tabela de Preços',   icon: TrendingUp,    permission: 'users_manage' },
     ],
   },
   {
