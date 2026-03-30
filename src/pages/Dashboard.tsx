@@ -370,10 +370,10 @@ const Dashboard = () => {
 
       {/* Dialogs - always rendered */}
       <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
-        <ServiceForm onClose={() => setIsServiceFormOpen(false)} />
+        {isServiceFormOpen && <ServiceForm onClose={() => setIsServiceFormOpen(false)} />}
       </Dialog>
       <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
-        <CostForm onClose={() => setIsCostFormOpen(false)} />
+        {isCostFormOpen && <CostForm onClose={() => setIsCostFormOpen(false)} />}
       </Dialog>
     </div>
   );
