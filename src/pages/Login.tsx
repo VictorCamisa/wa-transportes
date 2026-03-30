@@ -59,7 +59,7 @@ const Login = () => {
           variant: "destructive",
         });
       } else {
-        console.log('Login realizado com sucesso');
+        
         if (motorista) {
           // Redireciona para o checklist no dashboard
           toast({
