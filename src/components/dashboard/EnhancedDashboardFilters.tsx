@@ -25,17 +25,16 @@ interface EnhancedDashboardFiltersProps {
 const EnhancedDashboardFilters = ({ filters, onFiltersChange, onClearFilters }: EnhancedDashboardFiltersProps) => {
   // Buscar empresas únicas
   const { data: empresas } = useQuery({
-    queryKey: ['empresas-dashboard'],
+    queryKey: ['empresas-list'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('servicos' as any)
-        .select('empresa')
-        .order('empresa') as any);
+        .from('empresas' as any)
+        .select('nome')
+        .eq('ativa', true)
+        .order('nome') as any);
       
       if (error) throw error;
-      
-      const uniqueEmpresas = [...new Set((data as any[]).map((item: any) => item.empresa).filter(Boolean))];
-      return uniqueEmpresas as string[];
+      return (data as any[]).map((item: any) => item.nome) as string[];
     }
   });
 
