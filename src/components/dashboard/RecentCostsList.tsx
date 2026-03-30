@@ -60,7 +60,7 @@ const RecentCostsList = () => {
                     <TableRow key={cost.id}>
                       <TableCell className="font-medium text-xs sm:text-sm">{cost.descricao}</TableCell>
                       <TableCell className="text-xs sm:text-sm">
-                        {showValues ? cost.valor_texto : '***'}
+                        {cost.valor_texto}
                       </TableCell>
                       <TableCell className="text-xs sm:text-sm">
                         <span className={`px-2 py-1 rounded-full text-xs ${
