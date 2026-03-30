@@ -370,14 +370,10 @@ const Dashboard = () => {
 
       {/* Dialogs - always rendered */}
       <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <ServiceForm onClose={() => setIsServiceFormOpen(false)} />
-        </DialogContent>
+        <ServiceForm onClose={() => setIsServiceFormOpen(false)} />
       </Dialog>
       <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
-          <CostForm onClose={() => setIsCostFormOpen(false)} />
-        </DialogContent>
+        <CostForm onClose={() => setIsCostFormOpen(false)} />
       </Dialog>
     </div>
   );
