@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading } = useAuth();
 
-  console.log('Login component - Estado atual:', { user: !!user, loading });
+  
 
   // Redirecionar se já estiver logado
   useEffect(() => {
@@ -34,21 +34,11 @@ const Login = () => {
     setIsLoading(true);
     setError('');
     
-    console.log('Tentando fazer login com:', email);
-    console.log('URL atual:', window.location.href);
-    console.log('User agent:', navigator.userAgent);
     
     try {
       const { error } = await signIn(email, password);
       
       if (error) {
-        console.error('Erro no login:', error);
-        console.log('Detalhes completos do erro:', {
-          message: error.message,
-          status: error.status,
-          name: error.name,
-          cause: error.cause
-        });
         
         // Melhor tratamento de erros específicos
         let errorMessage = 'Email ou senha incorretos';
@@ -69,7 +59,7 @@ const Login = () => {
           variant: "destructive",
         });
       } else {
-        console.log('Login realizado com sucesso');
+        
         if (motorista) {
           // Redireciona para o checklist no dashboard
           toast({
@@ -91,7 +81,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.error('Erro inesperado no login:', error);
+      
       const errorMessage = 'Ocorreu um erro inesperado. Tente novamente';
       setError(errorMessage);
       toast({
@@ -237,10 +227,6 @@ const Login = () => {
               </button>
             </div>
 
-            {/* Debug info for mobile testing */}
-            <div className="mt-4 p-2 bg-gray-100 rounded text-xs text-gray-600 text-center">
-              Debug: {window.location.hostname} | {navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}
-            </div>
           </div>
         </div>
       </div>
