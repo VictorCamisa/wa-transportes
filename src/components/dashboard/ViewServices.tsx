@@ -120,7 +120,7 @@ const ViewServices = () => {
   };
 
   // LÓGICA CORRIGIDA: Admin OU usuário com permissão pode criar serviços
-  const canCreateService = profile?.role === 'admin' || hasPermission('services_create');
+  const canCreateService = hasPermission('services_create');
 
   console.log('ViewServices - canCreateService:', canCreateService, 'profile:', profile);
 

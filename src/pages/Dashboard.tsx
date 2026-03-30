@@ -141,8 +141,8 @@ const Dashboard = () => {
               <CostChart data={kpiData} loading={kpiLoading} />
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <RecentServicesList showValues={showValues} />
-              <RecentCostsList showValues={showValues} />
+              <RecentServicesList />
+              <RecentCostsList />
             </div>
           </div>
         );

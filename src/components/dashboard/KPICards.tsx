@@ -134,7 +134,7 @@ const KPICards = ({ data, loading }: KPICardsProps) => {
             </CardHeader>
             <CardContent>
               <div className={`text-2xl font-bold ${kpi.color} mb-1`}>
-                {showValues ? kpi.value : '***'}
+                {kpi.value}
               </div>
               <p className="text-xs text-gray-500">
                 {kpi.description}

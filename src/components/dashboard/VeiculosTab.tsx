@@ -215,10 +215,10 @@ const VeiculosTab = () => {
                 </div>
                 <div className="space-y-1">
                   <Label>Motorista</Label>
-                  <Select value={form.motorista_id} onValueChange={v => setForm(p => ({ ...p, motorista_id: v }))}>
+                  <Select value={form.motorista_id || "__none__"} onValueChange={v => setForm(p => ({ ...p, motorista_id: v === "__none__" ? "" : v }))}>
                     <SelectTrigger><SelectValue placeholder="Sem motorista" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Sem motorista</SelectItem>
+                      <SelectItem value="__none__">Sem motorista</SelectItem>
                       {motoristas.map(m => <SelectItem key={m.id} value={m.id}>{m.nome}</SelectItem>)}
                     </SelectContent>
                   </Select>
