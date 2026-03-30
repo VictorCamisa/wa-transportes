@@ -39,13 +39,6 @@ const Login = () => {
       const { error } = await signIn(email, password);
       
       if (error) {
-        console.error('Erro no login:', error);
-        console.log('Detalhes completos do erro:', {
-          message: error.message,
-          status: error.status,
-          name: error.name,
-          cause: error.cause
-        });
         
         // Melhor tratamento de erros específicos
         let errorMessage = 'Email ou senha incorretos';
