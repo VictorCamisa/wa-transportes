@@ -148,6 +148,7 @@ const Dashboard = () => {
             </div>
           </div>
         );
+      case 'empresas':    return <EmpresasTab />;
       case 'services':    return <ViewServices />;
       case 'costs':       return <ViewCosts />;
       case 'fechamento':  return <FechamentoTab />;
