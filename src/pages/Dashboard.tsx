@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -164,6 +164,34 @@ const Dashboard = () => {
       case 'dashboard':
         return (
           <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-3">
+              {(isAdmin || hasPermission('services_create')) && (
+                <Button onClick={() => setIsServiceFormOpen(true)} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Novo Serviço
+                </Button>
+              )}
+              {(isAdmin || hasPermission('costs_create')) && (
+                <Button variant="outline" onClick={() => setIsCostFormOpen(true)} className="gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Novo Custo
+                </Button>
+              )}
+              {(isAdmin || hasPermission('services_view')) && (
+                <Button variant="ghost" onClick={() => handleTabChange('services')} className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Ver Serviços
+                </Button>
+              )}
+              {(isAdmin || hasPermission('costs_view')) && (
+                <Button variant="ghost" onClick={() => handleTabChange('costs')} className="gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Ver Custos
+                </Button>
+              )}
+            </div>
+
             <EnhancedDashboardFilters
               filters={filters}
               onFiltersChange={setFilters}
@@ -316,10 +344,9 @@ const Dashboard = () => {
 
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Header */}
+        {/* Header - minimal */}
         <header className="bg-card border-b border-border px-4 lg:px-6 h-14 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
-            {/* Mobile hamburger */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9">
@@ -330,58 +357,30 @@ const Dashboard = () => {
                 <SidebarNav onSelect={() => setIsMobileOpen(false)} />
               </SheetContent>
             </Sheet>
-
-            <div>
-              <h1 className="text-sm font-semibold text-foreground leading-tight">{activeLabel}</h1>
-            </div>
+            <h1 className="text-sm font-semibold text-foreground leading-tight">{activeLabel}</h1>
           </div>
-
-          {/* Right actions */}
-          <div className="flex items-center gap-2">
-            {(isAdmin || hasPermission('services_create')) && (
-              <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="hidden sm:flex gap-1.5">
-                    <Plus className="h-3.5 w-3.5" />
-                    Novo Serviço
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl">
-                  <ServiceForm onClose={() => setIsServiceFormOpen(false)} />
-                </DialogContent>
-              </Dialog>
-            )}
-
-            {(isAdmin || hasPermission('costs_create')) && (
-              <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="hidden sm:flex gap-1.5 border-destructive/30 text-destructive hover:bg-destructive/10">
-                    <Plus className="h-3.5 w-3.5" />
-                    Novo Custo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <CostForm onClose={() => setIsCostFormOpen(false)} />
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
+          <p className="text-xs text-muted-foreground hidden sm:block">
+            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
         </header>
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 sm:pb-6 scrollbar-thin">
           {renderContent()}
         </main>
-
-        {/* Mobile FAB */}
-        <div className="sm:hidden fixed bottom-4 right-4 flex flex-col gap-2 z-50">
-          {(isAdmin || hasPermission('services_create')) && (
-            <Button size="icon" className="h-12 w-12 rounded-full shadow-lg" onClick={() => setIsServiceFormOpen(true)}>
-              <Plus className="h-5 w-5" />
-            </Button>
-          )}
-        </div>
       </div>
+
+      {/* Dialogs - always rendered */}
+      <Dialog open={isServiceFormOpen} onOpenChange={setIsServiceFormOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <ServiceForm onClose={() => setIsServiceFormOpen(false)} />
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <CostForm onClose={() => setIsCostFormOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
