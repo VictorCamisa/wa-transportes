@@ -10,10 +10,9 @@ interface RevenueByClientData {
 interface RevenueChartProps {
   data: RevenueByClientData[] | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const RevenueChart = ({ data, loading, showValues }: RevenueChartProps) => {
+const RevenueChart = ({ data, loading }: RevenueChartProps) => {
   if (loading) {
     return (
       <Card>

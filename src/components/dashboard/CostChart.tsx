@@ -10,10 +10,9 @@ interface KPIData {
 interface CostChartProps {
   data: KPIData | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const CostChart = ({ data, loading, showValues }: CostChartProps) => {
+const CostChart = ({ data, loading }: CostChartProps) => {
   if (loading) {
     return (
       <Card>

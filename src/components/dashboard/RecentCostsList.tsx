@@ -6,11 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDateForDisplay } from '@/utils/dateUtils';
 
-interface RecentCostsListProps {
-  showValues: boolean;
-}
-
-const RecentCostsList = ({ showValues }: RecentCostsListProps) => {
+const RecentCostsList = () => {
   const { data: recentCosts, isLoading } = useQuery({
     queryKey: ['recent-costs'],
     queryFn: async () => {
