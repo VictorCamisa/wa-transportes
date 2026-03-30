@@ -48,6 +48,7 @@ interface DashboardFilters {
 
 const NAV_ITEMS = [
   { id: 'dashboard',      label: 'Dashboard',          icon: LayoutDashboard, permission: 'dashboard_view' },
+  { id: 'empresas',       label: 'Empresas',            icon: Building2,       permission: 'services_view' },
   { id: 'services',       label: 'Serviços',            icon: FileText,        permission: 'services_view' },
   { id: 'costs',          label: 'Custos',              icon: DollarSign,      permission: 'costs_view' },
   { id: 'ordens_servico', label: 'Ordens de Serviço',  icon: ClipboardList,   permission: 'services_view' },
