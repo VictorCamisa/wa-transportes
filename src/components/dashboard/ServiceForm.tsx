@@ -34,6 +34,7 @@ interface ServiceData {
 }
 
 const ServiceForm = ({ onClose }: { onClose: () => void }) => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<ServiceData>({
     empresa: '',
     solicitante: '',
@@ -52,6 +53,23 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<ServiceData>>({});
+  const [novaEmpresa, setNovaEmpresa] = useState('');
+  const [showNovaEmpresa, setShowNovaEmpresa] = useState(false);
+  const [empresaSearch, setEmpresaSearch] = useState('');
+
+  // Fetch empresas from database
+  const { data: empresas } = useQuery({
+    queryKey: ['empresas-list'],
+    queryFn: async () => {
+      const { data, error } = await (supabase
+        .from('empresas' as any)
+        .select('*')
+        .eq('ativa', true)
+        .order('nome') as any);
+      if (error) throw error;
+      return data as { id: string; nome: string }[];
+    }
+  });
 
   const vehicleTypes = ['MOTO', 'CARRO', 'VUC', '3/4', 'TRUCK', 'CARRETA', 'CAM'];
   const freteTypes = ['Frete Fracionado', 'Frete Integral'];
