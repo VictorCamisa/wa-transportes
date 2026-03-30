@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus, Search, Filter } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -125,24 +126,23 @@ const ViewServices = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Ver Serviços</h1>
-          <p className="text-gray-600">
-            {totalCount && `Total no banco: ${totalCount.toLocaleString('pt-BR')} serviços | `}
-            Visualizando: {services?.length.toLocaleString('pt-BR') || 0} serviços
-            {(searchTerm || selectedEmpresa || selectedMes) && ' (filtrados)'}
+          <h1 className="text-2xl font-bold text-slate-800">Serviços</h1>
+          <p className="text-sm text-slate-500">
+            {totalCount ? `${totalCount.toLocaleString('pt-BR')} serviços no total` : ''}
+            {(searchTerm || selectedEmpresa || selectedMes) && ` · ${(services || []).length} filtrados`}
           </p>
         </div>
         {canCreateService && (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-green-600 hover:bg-green-700">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-1.5" />
                 Novo Serviço
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-3xl">
               <ServiceForm onClose={handleServiceAdded} />
             </DialogContent>
           </Dialog>
@@ -151,21 +151,15 @@ const ViewServices = () => {
 
       {/* Filtros */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="search">Buscar</Label>
+              <Label htmlFor="search" className="text-xs text-slate-500 mb-1 block">Buscar</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   id="search"
-                  placeholder="Buscar por empresa, solicitante, serviço ou cidade..."
+                  placeholder="Empresa, solicitante, cidade..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -174,57 +168,39 @@ const ViewServices = () => {
             </div>
             
             <div>
-              <Label htmlFor="empresa">Empresa</Label>
-              <select
-                id="empresa"
-                value={selectedEmpresa}
-                onChange={(e) => setSelectedEmpresa(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <option value="">Todas as empresas</option>
-                {empresas?.map((empresa) => (
-                  <option key={empresa} value={empresa}>
-                    {empresa}
-                  </option>
-                ))}
-              </select>
+              <Label className="text-xs text-slate-500 mb-1 block">Empresa</Label>
+              <Select value={selectedEmpresa || '__all__'} onValueChange={(v) => setSelectedEmpresa(v === '__all__' ? '' : v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas as empresas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">Todas as empresas</SelectItem>
+                  {(empresas || []).map((empresa) => (
+                    <SelectItem key={empresa} value={empresa}>{empresa}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <div>
-              <Label htmlFor="mes">Mês</Label>
-              <select
-                id="mes"
-                value={selectedMes}
-                onChange={(e) => setSelectedMes(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <option value="">Todos os meses</option>
-                <option value="1">Janeiro</option>
-                <option value="2">Fevereiro</option>
-                <option value="3">Março</option>
-                <option value="4">Abril</option>
-                <option value="5">Maio</option>
-                <option value="6">Junho</option>
-                <option value="7">Julho</option>
-                <option value="8">Agosto</option>
-                <option value="9">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-              </select>
+              <Label className="text-xs text-slate-500 mb-1 block">Mês</Label>
+              <Select value={selectedMes || '__all__'} onValueChange={(v) => setSelectedMes(v === '__all__' ? '' : v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os meses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">Todos os meses</SelectItem>
+                  {['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'].map((m, i) => (
+                    <SelectItem key={i+1} value={String(i+1)}>{m}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
           {(searchTerm || selectedEmpresa || selectedMes) && (
-            <div className="mt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedEmpresa('');
-                  setSelectedMes('');
-                }}
-              >
+            <div className="mt-3">
+              <Button variant="ghost" size="sm" onClick={() => { setSearchTerm(''); setSelectedEmpresa(''); setSelectedMes(''); }}>
                 Limpar Filtros
               </Button>
             </div>

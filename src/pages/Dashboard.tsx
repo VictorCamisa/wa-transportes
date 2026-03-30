@@ -113,6 +113,10 @@ const Dashboard = () => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setIsMobileOpen(false);
+    // Sync URL for shareable links
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({}, '', url.toString());
   };
 
   const handleLogout = async () => {
@@ -326,9 +330,18 @@ const Dashboard = () => {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-thin">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 pb-24 sm:pb-6 scrollbar-thin">
           {renderContent()}
         </main>
+
+        {/* Mobile FAB for quick actions */}
+        <div className="sm:hidden fixed bottom-4 right-4 flex flex-col gap-2 z-50">
+          {(isAdmin || hasPermission('services_create')) && (
+            <Button size="icon" className="h-12 w-12 rounded-full shadow-lg" onClick={() => setIsServiceFormOpen(true)}>
+              <Plus className="h-5 w-5" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
