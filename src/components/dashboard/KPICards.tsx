@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, DollarSign, Users, Target, TrendingDown, Calculator, PiggyBank, CreditCard } from 'lucide-react';
 
 interface KPIData {
@@ -23,16 +23,13 @@ interface KPICardsProps {
 const KPICards = ({ data, loading }: KPICardsProps) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[...Array(8)].map((_, i) => (
           <Card key={i} className="animate-pulse">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
-              <div className="h-4 w-4 bg-gray-200 rounded"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-8 bg-gray-200 rounded mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-16"></div>
+            <CardContent className="p-4">
+              <div className="h-3 bg-muted rounded w-20 mb-3" />
+              <div className="h-7 bg-muted rounded w-28 mb-1" />
+              <div className="h-2.5 bg-muted rounded w-16" />
             </CardContent>
           </Card>
         ))}
@@ -40,104 +37,33 @@ const KPICards = ({ data, loading }: KPICardsProps) => {
     );
   }
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
-  const formatPercentage = (value: number) => {
-    return `${value.toFixed(1)}%`;
-  };
+  const fmt = (v: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   const kpis = [
-    {
-      title: "Receita Total",
-      value: formatCurrency(data?.receita_total || 0),
-      icon: DollarSign,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      description: "Receita total dos serviços"
-    },
-    {
-      title: "Total de Custos",
-      value: formatCurrency(data?.total_custos || 0),
-      icon: TrendingDown,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-      description: "Soma de todos os custos"
-    },
-    {
-      title: "Lucro Bruto",
-      value: formatCurrency(data?.lucro_bruto || 0),
-      icon: TrendingUp,
-      color: data && data.lucro_bruto >= 0 ? "text-green-600" : "text-red-600",
-      bgColor: data && data.lucro_bruto >= 0 ? "bg-green-50" : "bg-red-50",
-      description: "Receita - Custos"
-    },
-    {
-      title: "Margem de Lucro",
-      value: formatPercentage(data?.margem_lucro || 0),
-      icon: Target,
-      color: data && data.margem_lucro >= 0 ? "text-green-600" : "text-red-600",
-      bgColor: data && data.margem_lucro >= 0 ? "bg-green-50" : "bg-red-50",
-      description: "Percentual de lucratividade"
-    },
-    {
-      title: "Total de Serviços",
-      value: (data?.total_servicos || 0).toString(),
-      icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      description: "Quantidade de serviços realizados"
-    },
-    {
-      title: "Ticket Médio",
-      value: formatCurrency(data?.ticket_medio || 0),
-      icon: Calculator,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      description: "Valor médio por serviço"
-    },
-    {
-      title: "Custos Fixos",
-      value: formatCurrency(data?.custos_fixos || 0),
-      icon: PiggyBank,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      description: "Custos que não variam"
-    },
-    {
-      title: "Custos Variáveis",
-      value: formatCurrency(data?.custos_variaveis || 0),
-      icon: CreditCard,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
-      description: "Custos que variam conforme produção"
-    }
+    { title: 'Receita Total', value: fmt(data?.receita_total || 0), icon: DollarSign, positive: true },
+    { title: 'Total de Custos', value: fmt(data?.total_custos || 0), icon: TrendingDown, positive: false },
+    { title: 'Lucro Bruto', value: fmt(data?.lucro_bruto || 0), icon: TrendingUp, positive: (data?.lucro_bruto || 0) >= 0 },
+    { title: 'Margem de Lucro', value: `${(data?.margem_lucro || 0).toFixed(1)}%`, icon: Target, positive: (data?.margem_lucro || 0) >= 0 },
+    { title: 'Total de Serviços', value: (data?.total_servicos || 0).toString(), icon: Users, positive: true },
+    { title: 'Ticket Médio', value: fmt(data?.ticket_medio || 0), icon: Calculator, positive: true },
+    { title: 'Custos Fixos', value: fmt(data?.custos_fixos || 0), icon: PiggyBank, positive: false },
+    { title: 'Custos Variáveis', value: fmt(data?.custos_variaveis || 0), icon: CreditCard, positive: false },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      {kpis.map((kpi, index) => {
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {kpis.map((kpi, i) => {
         const Icon = kpi.icon;
         return (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700">
-                {kpi.title}
-              </CardTitle>
-              <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
-                <Icon className={`h-4 w-4 ${kpi.color}`} />
+          <Card key={i} className="border-border hover:border-primary/20 transition-colors">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">{kpi.title}</span>
+                <Icon className="h-3.5 w-3.5 text-muted-foreground/60" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${kpi.color} mb-1`}>
+              <p className={`text-lg font-bold tracking-tight ${kpi.positive ? 'text-foreground' : 'text-destructive'}`}>
                 {kpi.value}
-              </div>
-              <p className="text-xs text-gray-500">
-                {kpi.description}
               </p>
             </CardContent>
           </Card>

@@ -164,6 +164,34 @@ const Dashboard = () => {
       case 'dashboard':
         return (
           <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-3">
+              {(isAdmin || hasPermission('services_create')) && (
+                <Button onClick={() => setIsServiceFormOpen(true)} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Novo Serviço
+                </Button>
+              )}
+              {(isAdmin || hasPermission('costs_create')) && (
+                <Button variant="outline" onClick={() => setIsCostFormOpen(true)} className="gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Novo Custo
+                </Button>
+              )}
+              {(isAdmin || hasPermission('services_view')) && (
+                <Button variant="ghost" onClick={() => handleTabChange('services')} className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Ver Serviços
+                </Button>
+              )}
+              {(isAdmin || hasPermission('costs_view')) && (
+                <Button variant="ghost" onClick={() => handleTabChange('costs')} className="gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Ver Custos
+                </Button>
+              )}
+            </div>
+
             <EnhancedDashboardFilters
               filters={filters}
               onFiltersChange={setFilters}
