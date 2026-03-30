@@ -18,10 +18,9 @@ interface KPIData {
 interface KPICardsProps {
   data: KPIData | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const KPICards = ({ data, loading, showValues }: KPICardsProps) => {
+const KPICards = ({ data, loading }: KPICardsProps) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
