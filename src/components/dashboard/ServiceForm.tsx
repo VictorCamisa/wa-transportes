@@ -7,11 +7,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { validateMonetaryValue, validateDate, validateTextInput, sanitizeInput } from '@/utils/inputValidation';
 import { getCurrentDateForInput, formatDateForDatabase } from '@/utils/dateUtils';
 import { formatCurrencyInput } from '@/utils/currencyUtils';
+import { Plus, Search } from 'lucide-react';
 
 interface ServiceData {
   empresa: string;
