@@ -10,10 +10,9 @@ interface KPIData {
 interface CostChartProps {
   data: KPIData | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const CostChart = ({ data, loading, showValues }: CostChartProps) => {
+const CostChart = ({ data, loading }: CostChartProps) => {
   if (loading) {
     return (
       <Card>
@@ -60,7 +59,6 @@ const CostChart = ({ data, loading, showValues }: CostChartProps) => {
   ];
 
   const formatCurrency = (value: number) => {
-    if (!showValues) return '***';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -95,7 +93,7 @@ const CostChart = ({ data, loading, showValues }: CostChartProps) => {
         <CardDescription>Proporção entre custos fixos e variáveis em maio</CardDescription>
       </CardHeader>
       <CardContent>
-        {showValues ? (
+        {chartData.some(d => d.value > 0) ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -123,7 +121,7 @@ const CostChart = ({ data, loading, showValues }: CostChartProps) => {
           </ResponsiveContainer>
         ) : (
           <div className="h-[300px] flex items-center justify-center">
-            <p className="text-gray-500 text-lg">Valores ocultos</p>
+            <p className="text-gray-500 text-lg">Nenhum dado de custos</p>
           </div>
         )}
       </CardContent>

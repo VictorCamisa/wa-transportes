@@ -64,7 +64,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, profile, loading, signOut } = useAuth();
   const { hasPermission, isAdmin, loading: permissionsLoading } = usePermissions();
-  const showValues = true;
+  
 
   const navItems = NAV_ITEMS.filter(item => isAdmin || hasPermission(item.permission));
 
@@ -135,14 +135,14 @@ const Dashboard = () => {
               onFiltersChange={setFilters}
               onClearFilters={() => setFilters({ startDate: '', endDate: '', empresa: '', tipoCusto: '', cidade: '', mes: '' })}
             />
-            <KPICards data={kpiData} loading={kpiLoading} showValues={showValues} />
+            <KPICards data={kpiData} loading={kpiLoading} />
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <RevenueChart data={revenueByClient || []} loading={kpiLoading} showValues={showValues} />
-              <CostChart data={kpiData} loading={kpiLoading} showValues={showValues} />
+              <RevenueChart data={revenueByClient || []} loading={kpiLoading} />
+              <CostChart data={kpiData} loading={kpiLoading} />
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <RecentServicesList showValues={showValues} />
-              <RecentCostsList showValues={showValues} />
+              <RecentServicesList />
+              <RecentCostsList />
             </div>
           </div>
         );

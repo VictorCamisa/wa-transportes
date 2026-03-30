@@ -6,11 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDateForDisplay } from '@/utils/dateUtils';
 
-interface RecentCostsListProps {
-  showValues: boolean;
-}
-
-const RecentCostsList = ({ showValues }: RecentCostsListProps) => {
+const RecentCostsList = () => {
   const { data: recentCosts, isLoading } = useQuery({
     queryKey: ['recent-costs'],
     queryFn: async () => {
@@ -64,7 +60,7 @@ const RecentCostsList = ({ showValues }: RecentCostsListProps) => {
                     <TableRow key={cost.id}>
                       <TableCell className="font-medium text-xs sm:text-sm">{cost.descricao}</TableCell>
                       <TableCell className="text-xs sm:text-sm">
-                        {showValues ? cost.valor_texto : '***'}
+                        {cost.valor_texto}
                       </TableCell>
                       <TableCell className="text-xs sm:text-sm">
                         <span className={`px-2 py-1 rounded-full text-xs ${
@@ -100,7 +96,7 @@ const RecentCostsList = ({ showValues }: RecentCostsListProps) => {
                     </span>
                   </div>
                   <p className="text-xs font-medium text-green-600">
-                    Valor: {showValues ? cost.valor_texto : '***'}
+                    Valor: {cost.valor_texto}
                   </p>
                   <p className="text-xs text-gray-600">Pagamento: {cost.forma_pagamento}</p>
                   {cost.data_vencimento && (

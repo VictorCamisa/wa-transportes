@@ -18,10 +18,9 @@ interface KPIData {
 interface KPICardsProps {
   data: KPIData | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const KPICards = ({ data, loading, showValues }: KPICardsProps) => {
+const KPICards = ({ data, loading }: KPICardsProps) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -135,7 +134,7 @@ const KPICards = ({ data, loading, showValues }: KPICardsProps) => {
             </CardHeader>
             <CardContent>
               <div className={`text-2xl font-bold ${kpi.color} mb-1`}>
-                {showValues ? kpi.value : '***'}
+                {kpi.value}
               </div>
               <p className="text-xs text-gray-500">
                 {kpi.description}

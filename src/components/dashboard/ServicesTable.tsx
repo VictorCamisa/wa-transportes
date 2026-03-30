@@ -88,10 +88,7 @@ const ServicesTable = ({ data, loading, onRefresh }: ServicesTableProps) => {
     if (onRefresh) onRefresh();
   };
 
-  // Todos os usuários autenticados podem editar/excluir serviços
   const canEditDelete = true;
-
-  console.log('ServicesTable - canEditDelete:', canEditDelete, 'profile:', profile);
 
   if (loading) {
     return (

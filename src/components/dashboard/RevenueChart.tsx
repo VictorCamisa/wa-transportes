@@ -10,10 +10,9 @@ interface RevenueByClientData {
 interface RevenueChartProps {
   data: RevenueByClientData[] | null;
   loading: boolean;
-  showValues: boolean;
 }
 
-const RevenueChart = ({ data, loading, showValues }: RevenueChartProps) => {
+const RevenueChart = ({ data, loading }: RevenueChartProps) => {
   if (loading) {
     return (
       <Card>
@@ -47,7 +46,6 @@ const RevenueChart = ({ data, loading, showValues }: RevenueChartProps) => {
   }
 
   const formatCurrency = (value: number) => {
-    if (!showValues) return '***';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -61,7 +59,7 @@ const RevenueChart = ({ data, loading, showValues }: RevenueChartProps) => {
         <CardDescription>Top 10 clientes por faturamento em maio</CardDescription>
       </CardHeader>
       <CardContent>
-        {showValues ? (
+        {data && data.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -85,7 +83,7 @@ const RevenueChart = ({ data, loading, showValues }: RevenueChartProps) => {
           </ResponsiveContainer>
         ) : (
           <div className="h-[300px] flex items-center justify-center">
-            <p className="text-gray-500 text-lg">Valores ocultos</p>
+            <p className="text-gray-500 text-lg">Nenhum dado disponível</p>
           </div>
         )}
       </CardContent>

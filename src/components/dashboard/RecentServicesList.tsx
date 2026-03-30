@@ -6,11 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDateForDisplay } from '@/utils/dateUtils';
 
-interface RecentServicesListProps {
-  showValues: boolean;
-}
-
-const RecentServicesList = ({ showValues }: RecentServicesListProps) => {
+const RecentServicesList = () => {
   const { data: recentServices, isLoading } = useQuery({
     queryKey: ['recent-services'],
     queryFn: async () => {
@@ -103,7 +99,7 @@ const RecentServicesList = ({ showValues }: RecentServicesListProps) => {
                       </TableCell>
                       <TableCell className="text-xs sm:text-sm">{service.cidade || '-'}</TableCell>
                       <TableCell className="text-xs sm:text-sm font-medium">
-                        {showValues ? service.valor_texto : '***'}
+                        {service.valor_texto}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -118,7 +114,7 @@ const RecentServicesList = ({ showValues }: RecentServicesListProps) => {
                   <div className="flex justify-between items-start">
                     <h4 className="font-medium text-sm">{service.empresa}</h4>
                     <span className="text-xs text-green-600 font-medium">
-                      {showValues ? service.valor_texto : '***'}
+                      {service.valor_texto}
                     </span>
                   </div>
                   <p className="text-xs text-gray-600">
