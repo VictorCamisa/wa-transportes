@@ -121,7 +121,7 @@ const CostChart = ({ data, loading }: CostChartProps) => {
           </ResponsiveContainer>
         ) : (
           <div className="h-[300px] flex items-center justify-center">
-            <p className="text-gray-500 text-lg">Valores ocultos</p>
+            <p className="text-gray-500 text-lg">Nenhum dado de custos</p>
           </div>
         )}
       </CardContent>
