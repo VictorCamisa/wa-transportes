@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn, user, loading } = useAuth();
 
-  console.log('Login component - Estado atual:', { user: !!user, loading });
+  
 
   // Redirecionar se já estiver logado
   useEffect(() => {
