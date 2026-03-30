@@ -46,7 +46,6 @@ const RevenueChart = ({ data, loading }: RevenueChartProps) => {
   }
 
   const formatCurrency = (value: number) => {
-    if (!showValues) return '***';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
