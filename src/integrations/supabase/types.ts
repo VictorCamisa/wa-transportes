@@ -227,6 +227,27 @@ export type Database = {
         }
         Relationships: []
       }
+      empresas: {
+        Row: {
+          ativa: boolean
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativa?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          ativa?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
       motoristas: {
         Row: {
           categoria_cnh: string

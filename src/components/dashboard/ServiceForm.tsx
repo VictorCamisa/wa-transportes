@@ -7,11 +7,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { validateMonetaryValue, validateDate, validateTextInput, sanitizeInput } from '@/utils/inputValidation';
 import { getCurrentDateForInput, formatDateForDatabase } from '@/utils/dateUtils';
 import { formatCurrencyInput } from '@/utils/currencyUtils';
+import { Plus, Search } from 'lucide-react';
 
 interface ServiceData {
   empresa: string;
@@ -31,6 +34,7 @@ interface ServiceData {
 }
 
 const ServiceForm = ({ onClose }: { onClose: () => void }) => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<ServiceData>({
     empresa: '',
     solicitante: '',
@@ -49,6 +53,23 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<ServiceData>>({});
+  const [novaEmpresa, setNovaEmpresa] = useState('');
+  const [showNovaEmpresa, setShowNovaEmpresa] = useState(false);
+  const [empresaSearch, setEmpresaSearch] = useState('');
+
+  // Fetch empresas from database
+  const { data: empresas } = useQuery({
+    queryKey: ['empresas-list'],
+    queryFn: async () => {
+      const { data, error } = await (supabase
+        .from('empresas' as any)
+        .select('*')
+        .eq('ativa', true)
+        .order('nome') as any);
+      if (error) throw error;
+      return data as { id: string; nome: string }[];
+    }
+  });
 
   const vehicleTypes = ['MOTO', 'CARRO', 'VUC', '3/4', 'TRUCK', 'CARRETA', 'CAM'];
   const freteTypes = ['Frete Fracionado', 'Frete Integral'];
@@ -203,16 +224,79 @@ const ServiceForm = ({ onClose }: { onClose: () => void }) => {
           
           <div className="space-y-2">
             <Label htmlFor="empresa">Empresa *</Label>
-            <Input
-              id="empresa"
-              value={formData.empresa}
-              onChange={(e) => handleInputChange('empresa', e.target.value)}
-              placeholder="Nome da empresa"
-              maxLength={100}
-              required
-            />
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Select value={formData.empresa} onValueChange={(value) => {
+                  if (value === '__new__') {
+                    setShowNovaEmpresa(true);
+                  } else {
+                    handleInputChange('empresa', value);
+                  }
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a empresa" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    <div className="p-2">
+                      <Input
+                        placeholder="Buscar empresa..."
+                        value={empresaSearch}
+                        onChange={(e) => setEmpresaSearch(e.target.value)}
+                        className="h-8"
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {(empresas || [])
+                      .filter(e => e.nome.toLowerCase().includes(empresaSearch.toLowerCase()))
+                      .map((empresa) => (
+                        <SelectItem key={empresa.id} value={empresa.nome}>
+                          {empresa.nome}
+                        </SelectItem>
+                      ))}
+                    <SelectItem value="__new__" className="text-primary font-medium border-t mt-1">
+                      <span className="flex items-center gap-1"><Plus className="h-3 w-3" /> Criar nova empresa</span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {showNovaEmpresa && (
+              <div className="flex gap-2 mt-2 p-3 border rounded-lg bg-muted/50">
+                <Input
+                  value={novaEmpresa}
+                  onChange={(e) => setNovaEmpresa(e.target.value.toUpperCase())}
+                  placeholder="Nome da nova empresa"
+                  className="flex-1"
+                />
+                <Button type="button" size="sm" onClick={async () => {
+                  if (!novaEmpresa.trim()) return;
+                  try {
+                    const { error } = await (supabase.from('empresas' as any).insert([{ nome: novaEmpresa.trim() }]) as any);
+                    if (error) {
+                      if (error.code === '23505') {
+                        toast({ title: "Empresa já existe", description: "Selecione na lista.", variant: "destructive" });
+                      } else throw error;
+                    } else {
+                      queryClient.invalidateQueries({ queryKey: ['empresas-list'] });
+                      handleInputChange('empresa', novaEmpresa.trim());
+                      setNovaEmpresa('');
+                      setShowNovaEmpresa(false);
+                      toast({ title: "Empresa criada!", description: `${novaEmpresa.trim()} adicionada.` });
+                    }
+                  } catch (err) {
+                    toast({ title: "Erro", description: "Não foi possível criar a empresa.", variant: "destructive" });
+                  }
+                }} className="bg-primary hover:bg-primary/90">
+                  Criar
+                </Button>
+                <Button type="button" size="sm" variant="outline" onClick={() => { setShowNovaEmpresa(false); setNovaEmpresa(''); }}>
+                  Cancelar
+                </Button>
+              </div>
+            )}
             {errors.empresa && (
-              <p className="text-sm text-red-600">{errors.empresa}</p>
+              <p className="text-sm text-destructive">{errors.empresa}</p>
             )}
           </div>
           

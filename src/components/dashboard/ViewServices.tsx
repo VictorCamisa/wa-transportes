@@ -100,17 +100,16 @@ const ViewServices = () => {
   });
 
   const { data: empresas } = useQuery({
-    queryKey: ['empresas'],
+    queryKey: ['empresas-list'],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from('servicos' as any)
-        .select('empresa')
-        .order('empresa') as any);
+        .from('empresas' as any)
+        .select('*')
+        .eq('ativa', true)
+        .order('nome') as any);
       
       if (error) throw error;
-      
-      const uniqueEmpresas = [...new Set((data as any[]).map((item: any) => item.empresa))];
-      return uniqueEmpresas;
+      return (data as any[]).map((item: any) => item.nome);
     }
   });
 
