@@ -34,9 +34,6 @@ const Login = () => {
     setIsLoading(true);
     setError('');
     
-    console.log('Tentando fazer login com:', email);
-    console.log('URL atual:', window.location.href);
-    console.log('User agent:', navigator.userAgent);
     
     try {
       const { error } = await signIn(email, password);
