@@ -227,10 +227,6 @@ const Login = () => {
               </button>
             </div>
 
-            {/* Debug info for mobile testing */}
-            <div className="mt-4 p-2 bg-gray-100 rounded text-xs text-gray-600 text-center">
-              Debug: {window.location.hostname} | {navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}
-            </div>
           </div>
         </div>
       </div>
