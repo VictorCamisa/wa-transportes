@@ -57,7 +57,7 @@ const NAV_GROUPS = [
     items: [
       { id: 'empresas',       label: 'Empresas',           icon: Building2,     permission: 'services_view' },
       { id: 'services',       label: 'Serviços',           icon: FileText,      permission: 'services_view' },
-      { id: 'ordens_servico', label: 'Ordens de Serviço',  icon: ClipboardList, permission: 'services_view' },
+      
       { id: 'checklist',      label: 'Checklist',          icon: Truck,         permission: 'checklist_access' },
       { id: 'mapa',           label: 'Mapa ao Vivo',       icon: MapPin,        permission: 'dashboard_view' },
     ],
