@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
-  Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard, Building2,
+  Menu, LogOut, Home, UserCheck, Car, MapPin, LayoutDashboard, Building2,
   ChevronDown, Settings,
 } from 'lucide-react';
 import UsersManagement from '@/components/dashboard/UsersManagement';
