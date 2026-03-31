@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
-  Menu, LogOut, Home, UserCheck, Car, ClipboardList, MapPin, LayoutDashboard, Building2,
+  Menu, LogOut, Home, UserCheck, Car, MapPin, LayoutDashboard, Building2,
   ChevronDown, Settings,
 } from 'lucide-react';
 import UsersManagement from '@/components/dashboard/UsersManagement';
@@ -29,7 +29,7 @@ import ViewCosts from '@/components/dashboard/ViewCosts';
 import FechamentoTab from '@/components/dashboard/FechamentoTab';
 import MotoristasTab from '@/components/dashboard/MotoristasTab';
 import VeiculosTab from '@/components/dashboard/VeiculosTab';
-import OrdensServicoTab from '@/components/dashboard/OrdensServicoTab';
+
 
 import LiveMap from '@/components/dashboard/LiveMap';
 import EmpresasTab from '@/components/dashboard/EmpresasTab';
@@ -57,7 +57,7 @@ const NAV_GROUPS = [
     items: [
       { id: 'empresas',       label: 'Empresas',           icon: Building2,     permission: 'services_view' },
       { id: 'services',       label: 'Serviços',           icon: FileText,      permission: 'services_view' },
-      { id: 'ordens_servico', label: 'Ordens de Serviço',  icon: ClipboardList, permission: 'services_view' },
+      
       { id: 'checklist',      label: 'Checklist',          icon: Truck,         permission: 'checklist_access' },
       { id: 'mapa',           label: 'Mapa ao Vivo',       icon: MapPin,        permission: 'dashboard_view' },
     ],
@@ -214,7 +214,7 @@ const Dashboard = () => {
       case 'checklist':      return <ChecklistForm />;
       case 'motoristas':     return <MotoristasTab />;
       case 'veiculos':       return <VeiculosTab />;
-      case 'ordens_servico': return <OrdensServicoTab />;
+      
       case 'mapa':           return <LiveMap />;
       case 'users':          return <UsersManagement />;
       case 'configuracoes':  return <SettingsPage />;

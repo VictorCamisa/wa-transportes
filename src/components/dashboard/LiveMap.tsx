@@ -48,7 +48,7 @@ const LiveMap = () => {
       for (const m of motoristas) {
         const { data } = await (supabase
           .from('posicoes_gps' as any)
-          .select('*, ordens_servico(numero_os)')
+          .select('*')
           .eq('motorista_id', m.id)
           .order('created_at', { ascending: false })
           .limit(1) as any);
@@ -63,7 +63,7 @@ const LiveMap = () => {
             velocidade: p.velocidade,
             created_at: p.created_at,
             ordem_servico_id: p.ordem_servico_id,
-            numero_os: p.ordens_servico?.numero_os || null,
+            numero_os: null,
           });
         }
       }
