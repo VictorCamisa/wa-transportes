@@ -461,6 +461,7 @@ export type Database = {
           seguro: string | null
           servico: string | null
           solicitante: string | null
+          status: string
           tipo_veiculo: string | null
           valor_numerico: number | null
           valor_texto: string | null
@@ -479,6 +480,7 @@ export type Database = {
           seguro?: string | null
           servico?: string | null
           solicitante?: string | null
+          status?: string
           tipo_veiculo?: string | null
           valor_numerico?: number | null
           valor_texto?: string | null
@@ -497,6 +499,7 @@ export type Database = {
           seguro?: string | null
           servico?: string | null
           solicitante?: string | null
+          status?: string
           tipo_veiculo?: string | null
           valor_numerico?: number | null
           valor_texto?: string | null
