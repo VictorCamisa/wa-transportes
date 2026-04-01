@@ -55,6 +55,20 @@ const EmpresasTab = () => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('empresas').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['empresas'] });
+      toast({ title: 'Empresa excluída com sucesso!' });
+    },
+    onError: (err: any) => {
+      toast({ title: 'Erro ao excluir empresa', description: err.message, variant: 'destructive' });
+    },
+  });
+
   const filtered = empresas.filter((e: any) =>
     e.nome.toLowerCase().includes(search.toLowerCase())
   );
