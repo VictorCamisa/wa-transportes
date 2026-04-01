@@ -101,16 +101,16 @@ const ViewServices = () => {
   });
 
   const { data: empresas } = useQuery({
-    queryKey: ['empresas-list'],
+    queryKey: ['empresas-names-filter'],
     queryFn: async () => {
       const { data, error } = await (supabase
         .from('empresas' as any)
-        .select('*')
+        .select('nome')
         .eq('ativa', true)
         .order('nome') as any);
       
       if (error) throw error;
-      return (data as any[]).map((item: any) => item.nome);
+      return (data as any[]).map((item: any) => item.nome) as string[];
     }
   });
 
