@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Download, Filter, RefreshCw } from 'lucide-react';
+import { Download, Filter } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { formatDateForDisplay, formatDateForDatabase } from '@/utils/dateUtils';
 import { calculateCostTotals, formatCurrency as formatCurrencyUtil } from '@/utils/costCalculations';
-import { fixCostDataConsistency } from '@/utils/fixCostData';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -32,74 +31,24 @@ const CostFiltersAndPDF = () => {
   const [costs, setCosts] = useState<CostData[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [isFixingData, setIsFixingData] = useState(false);
-
-  // Função para corrigir inconsistências nos dados
-  const handleFixData = async () => {
-    setIsFixingData(true);
-    try {
-      const result = await fixCostDataConsistency();
-      if (result.success) {
-        toast({
-          title: "Dados corrigidos!",
-          description: result.message,
-        });
-        // Refazer a busca se houver dados filtrados
-        if (hasSearched) {
-          handleSearch();
-        }
-      } else {
-        toast({
-          title: "Erro na correção",
-          description: "Ocorreu um erro ao corrigir os dados.",
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error('Erro ao corrigir dados:', error);
-      toast({
-        title: "Erro na correção",
-        description: "Ocorreu um erro inesperado ao corrigir os dados.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsFixingData(false);
-    }
-  };
 
   const handleSearch = async () => {
-    console.log('=== DEBUG CUSTOS FILTROS ===');
-    console.log('startDate:', startDate);
-    console.log('endDate:', endDate);
-    console.log('selectedCategoria:', selectedCategoria);
-    
-    if (!startDate || !endDate) {
-      toast({
-        title: "Filtros obrigatórios",
-        description: "Por favor, preencha o período.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoading(true);
     setHasSearched(true);
 
     try {
-      const formattedStartDate = formatDateForDatabase(startDate);
-      const formattedEndDate = formatDateForDatabase(endDate);
-      
-      console.log('Data inicial formatada:', formattedStartDate);
-      console.log('Data final formatada:', formattedEndDate);
-
       let query = (supabase as any)
         .from('custos')
         .select('*')
-        .gte('data_vencimento', formattedStartDate)
-        .lte('data_vencimento', formattedEndDate)
         .order('data_vencimento', { ascending: true });
 
-      // Aplicar filtro de categoria se selecionado
+      if (startDate) {
+        query = query.gte('data_vencimento', formatDateForDatabase(startDate));
+      }
+      if (endDate) {
+        query = query.lte('data_vencimento', formatDateForDatabase(endDate));
+      }
+
       if (selectedCategoria && selectedCategoria !== 'ALL') {
         if (selectedCategoria === 'SEM_CATEGORIA') {
           query = query.is('categoria', null);
@@ -110,26 +59,17 @@ const CostFiltersAndPDF = () => {
 
       const { data, error } = await query;
 
-      console.log('Resultado da busca:', { data, error });
-      console.log('Quantidade de registros:', data?.length || 0);
-
       if (error) throw error;
 
       setCosts(data || []);
-      
+
       if (!data || data.length === 0) {
         toast({
           title: "Nenhum resultado",
           description: "Não foram encontrados custos para os filtros selecionados.",
         });
-      } else {
-        toast({
-          title: "Busca concluída",
-          description: `Encontrados ${data.length} custo(s).`,
-        });
       }
     } catch (error) {
-      console.error('Erro ao buscar custos:', error);
       toast({
         title: "Erro na busca",
         description: "Ocorreu um erro ao buscar os custos.",
@@ -229,13 +169,13 @@ const CostFiltersAndPDF = () => {
             <span>Filtros de Custos</span>
           </CardTitle>
           <CardDescription>
-            Selecione o período e categoria para filtrar e gerar relatório em PDF
+            Filtre por período e/ou categoria. Todos os campos são opcionais.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div className="space-y-2">
-              <Label htmlFor="start-date">Data Inicial</Label>
+              <Label htmlFor="start-date">Data Inicial (opcional)</Label>
               <Input
                 id="start-date"
                 type="date"
@@ -243,9 +183,9 @@ const CostFiltersAndPDF = () => {
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="end-date">Data Final</Label>
+              <Label htmlFor="end-date">Data Final (opcional)</Label>
               <Input
                 id="end-date"
                 type="date"
@@ -253,9 +193,9 @@ const CostFiltersAndPDF = () => {
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="categoria">Categoria (Opcional)</Label>
+              <Label htmlFor="categoria">Categoria</Label>
               <Select value={selectedCategoria} onValueChange={setSelectedCategoria}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as categorias" />
@@ -268,19 +208,9 @@ const CostFiltersAndPDF = () => {
                 </SelectContent>
               </Select>
             </div>
-            
-            <Button onClick={handleSearch} disabled={loading} className="bg-red-600 hover:bg-red-700">
-              {loading ? 'Buscando...' : 'Buscar'}
-            </Button>
-            
-            <Button 
-              onClick={handleFixData} 
-              disabled={isFixingData} 
-              variant="outline" 
-              className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isFixingData ? 'animate-spin' : ''}`} />
-              {isFixingData ? 'Corrigindo...' : 'Corrigir Dados'}
+
+            <Button onClick={handleSearch} disabled={loading}>
+              {loading ? 'Buscando...' : 'Filtrar'}
             </Button>
           </div>
         </CardContent>

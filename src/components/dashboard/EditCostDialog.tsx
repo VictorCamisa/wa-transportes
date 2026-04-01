@@ -124,12 +124,20 @@ const EditCostDialog = ({ cost, open, onClose, onUpdate }: EditCostDialogProps) 
             
             <div className="space-y-2">
               <Label htmlFor="forma_pagamento">Forma de Pagamento</Label>
-              <Input
-                id="forma_pagamento"
-                value={formData.forma_pagamento}
-                onChange={(e) => handleInputChange('forma_pagamento', e.target.value)}
-                required
-              />
+              <Select value={formData.forma_pagamento} onValueChange={(value) => handleInputChange('forma_pagamento', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a forma de pagamento" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pix">Pix</SelectItem>
+                  <SelectItem value="Boleto">Boleto</SelectItem>
+                  <SelectItem value="Cartão de Crédito">Cartão de Crédito</SelectItem>
+                  <SelectItem value="Cartão de Débito">Cartão de Débito</SelectItem>
+                  <SelectItem value="Transferência Bancária">Transferência Bancária</SelectItem>
+                  <SelectItem value="Dinheiro">Dinheiro</SelectItem>
+                  <SelectItem value="Cheque">Cheque</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">
