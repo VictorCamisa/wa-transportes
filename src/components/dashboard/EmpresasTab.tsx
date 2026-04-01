@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Building2, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Plus, Search, Building2, ExternalLink, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -52,6 +52,20 @@ const EmpresasTab = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['empresas'] });
       toast({ title: 'Status atualizado!' });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('empresas').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['empresas'] });
+      toast({ title: 'Empresa excluída com sucesso!' });
+    },
+    onError: (err: any) => {
+      toast({ title: 'Erro ao excluir empresa', description: err.message, variant: 'destructive' });
     },
   });
 
@@ -157,21 +171,36 @@ const EmpresasTab = () => {
                   <ExternalLink className="h-4 w-4 text-slate-300 group-hover:text-blue-500 transition-colors" />
                 </div>
                 {isAdmin && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-3 text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleMutation.mutate({ id: empresa.id, ativa: !empresa.ativa });
-                    }}
-                  >
-                    {empresa.ativa ? (
-                      <><ToggleRight className="h-3.5 w-3.5 mr-1" /> Desativar</>
-                    ) : (
-                      <><ToggleLeft className="h-3.5 w-3.5 mr-1" /> Ativar</>
-                    )}
-                  </Button>
+                  <div className="flex gap-1 mt-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMutation.mutate({ id: empresa.id, ativa: !empresa.ativa });
+                      }}
+                    >
+                      {empresa.ativa ? (
+                        <><ToggleRight className="h-3.5 w-3.5 mr-1" /> Desativar</>
+                      ) : (
+                        <><ToggleLeft className="h-3.5 w-3.5 mr-1" /> Ativar</>
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm(`Excluir "${empresa.nome}"?`)) {
+                          deleteMutation.mutate(empresa.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>
