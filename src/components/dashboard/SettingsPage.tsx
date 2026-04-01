@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { 
-  Building2, Save, Shield, Bell, Palette, Lock, 
-  Eye, EyeOff, CheckCircle 
+import {
+  Building2, Save, Shield, Lock,
+  Eye, EyeOff, CheckCircle
 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,18 +25,12 @@ const SettingsPage = () => {
       </div>
 
       <Tabs defaultValue="empresa" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
+        <TabsList className="grid w-full grid-cols-2 h-auto">
           <TabsTrigger value="empresa" className="text-xs sm:text-sm gap-1">
             <Building2 className="h-3.5 w-3.5" /> Empresa
           </TabsTrigger>
           <TabsTrigger value="seguranca" className="text-xs sm:text-sm gap-1">
             <Shield className="h-3.5 w-3.5" /> Segurança
-          </TabsTrigger>
-          <TabsTrigger value="notificacoes" className="text-xs sm:text-sm gap-1">
-            <Bell className="h-3.5 w-3.5" /> Notificações
-          </TabsTrigger>
-          <TabsTrigger value="aparencia" className="text-xs sm:text-sm gap-1">
-            <Palette className="h-3.5 w-3.5" /> Aparência
           </TabsTrigger>
         </TabsList>
 
@@ -46,12 +39,6 @@ const SettingsPage = () => {
         </TabsContent>
         <TabsContent value="seguranca">
           <SecuritySettings />
-        </TabsContent>
-        <TabsContent value="notificacoes">
-          <NotificationSettings />
-        </TabsContent>
-        <TabsContent value="aparencia">
-          <AppearanceSettings />
         </TabsContent>
       </Tabs>
     </div>
@@ -252,79 +239,5 @@ const SecuritySettings = () => {
   );
 };
 
-// ─── Notification Settings ───
-const NotificationSettings = () => {
-  const [prefs, setPrefs] = useState({
-    emailNewService: true,
-    emailNewCost: false,
-    emailDocExpiry: true,
-    systemAlerts: true,
-  });
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Notificações</CardTitle>
-        <CardDescription>Gerencie suas preferências de notificação</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {[
-          { key: 'emailNewService', label: 'Novo serviço cadastrado', desc: 'Receba aviso quando um novo serviço for lançado' },
-          { key: 'emailNewCost', label: 'Novo custo cadastrado', desc: 'Receba aviso quando um novo custo for registrado' },
-          { key: 'emailDocExpiry', label: 'Documentos vencendo', desc: 'Alerta quando documentos estiverem próximos do vencimento' },
-          { key: 'systemAlerts', label: 'Alertas do sistema', desc: 'Notificações importantes sobre o sistema' },
-        ].map(item => (
-          <div key={item.key} className="flex items-center justify-between p-3 border rounded-lg">
-            <div>
-              <p className="text-sm font-medium text-slate-700">{item.label}</p>
-              <p className="text-xs text-slate-500">{item.desc}</p>
-            </div>
-            <Switch 
-              checked={(prefs as any)[item.key]} 
-              onCheckedChange={v => setPrefs({ ...prefs, [item.key]: v })} 
-            />
-          </div>
-        ))}
-        <p className="text-xs text-slate-400 italic">As preferências de notificação serão salvas automaticamente.</p>
-      </CardContent>
-    </Card>
-  );
-};
-
-// ─── Appearance Settings ───
-const AppearanceSettings = () => {
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Aparência</CardTitle>
-        <CardDescription>Personalize a aparência do sistema</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Label>Tema</Label>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { id: 'light' as const, label: 'Claro', preview: 'bg-white border-2' },
-            { id: 'dark' as const, label: 'Escuro', preview: 'bg-slate-900 border-2' },
-            { id: 'system' as const, label: 'Sistema', preview: 'bg-gradient-to-r from-white to-slate-900 border-2' },
-          ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTheme(t.id)}
-              className={`rounded-lg p-3 text-center transition-all ${
-                theme === t.id ? 'ring-2 ring-blue-500' : ''
-              }`}
-            >
-              <div className={`h-16 rounded-md mb-2 ${t.preview} ${theme === t.id ? 'border-blue-500' : 'border-slate-200'}`} />
-              <p className="text-sm font-medium text-slate-700">{t.label}</p>
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-slate-400 italic">O tema escuro estará disponível em breve.</p>
-      </CardContent>
-    </Card>
-  );
-};
 
 export default SettingsPage;

@@ -68,12 +68,20 @@ const CostFormFields = ({ formData, errors, onInputChange }: CostFormFieldsProps
 
       <div className="space-y-2">
         <Label htmlFor="forma_pagamento">Forma de Pagamento *</Label>
-        <Input
-          id="forma_pagamento"
-          value={formData.forma_pagamento}
-          onChange={(e) => onInputChange('forma_pagamento', e.target.value)}
-          placeholder="Ex: Pix, Boleto, Cartão"
-        />
+        <Select value={formData.forma_pagamento} onValueChange={(value) => onInputChange('forma_pagamento', value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione a forma de pagamento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Pix">Pix</SelectItem>
+            <SelectItem value="Boleto">Boleto</SelectItem>
+            <SelectItem value="Cartão de Crédito">Cartão de Crédito</SelectItem>
+            <SelectItem value="Cartão de Débito">Cartão de Débito</SelectItem>
+            <SelectItem value="Transferência Bancária">Transferência Bancária</SelectItem>
+            <SelectItem value="Dinheiro">Dinheiro</SelectItem>
+            <SelectItem value="Cheque">Cheque</SelectItem>
+          </SelectContent>
+        </Select>
         {errors.forma_pagamento && (
           <p className="text-sm text-red-600">{errors.forma_pagamento}</p>
         )}

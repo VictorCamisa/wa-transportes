@@ -10,13 +10,16 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Dialog } from '@/components/ui/dialog';
+import { Edit, Trash2, Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { usePermissions } from '@/hooks/usePermissions';
 import EditCostDialog from './EditCostDialog';
 import CostFiltersAndPDF from './CostFiltersAndPDF';
+import CostForm from './CostForm';
 import { formatDateForDisplay } from '@/utils/dateUtils';
 
 interface CostData {
@@ -33,8 +36,10 @@ interface CostData {
 
 const ViewCosts = () => {
   const { profile } = useAuth();
+  const { isAdmin, hasPermission } = usePermissions();
   const [editingCost, setEditingCost] = useState<CostData | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isCostFormOpen, setIsCostFormOpen] = useState(false);
 
   const { data: costs, isLoading, refetch } = useQuery({
     queryKey: ['costs'],
@@ -143,6 +148,20 @@ const ViewCosts = () => {
 
   return (
     <div className="space-y-6">
+      {/* Cabeçalho com botão de ação */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-foreground">Custos</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Gerencie os custos da empresa</p>
+        </div>
+        {(isAdmin || hasPermission('costs_create')) && (
+          <Button onClick={() => setIsCostFormOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Novo Custo
+          </Button>
+        )}
+      </div>
+
       {/* Filtros e Relatório PDF */}
       <CostFiltersAndPDF />
       
@@ -226,6 +245,12 @@ const ViewCosts = () => {
           onUpdate={handleEditUpdate}
         />
       )}
+
+      <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
+        {isCostFormOpen && (
+          <CostForm onClose={() => { setIsCostFormOpen(false); refetch(); }} />
+        )}
+      </Dialog>
     </div>
   );
 };
