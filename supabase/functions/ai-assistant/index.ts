@@ -120,22 +120,8 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
       if (error) return JSON.stringify({ error: error.message });
       return JSON.stringify({ total: data?.length || 0, servicos: data });
     }
-    case "criar_servico": {
-      const record: any = {
-        empresa: args.empresa,
-        servico: args.servico || null,
-        cidade: args.cidade || null,
-        motorista: args.motorista || null,
-        veiculo: args.veiculo || null,
-        valor_texto: args.valor_texto || null,
-        valor_numerico: args.valor_numerico || null,
-        solicitante: args.solicitante || null,
-        data_servico: args.data_servico || new Date().toISOString().split("T")[0],
-        status: args.status || "pendente",
-      };
-      const { data, error } = await supabase.from("servicos").insert(record).select().single();
-      if (error) return JSON.stringify({ error: error.message });
-      return JSON.stringify({ sucesso: true, servico: data });
+    case "abrir_formulario_servico": {
+      return JSON.stringify({ action: "open_service_form" });
     }
     case "query_custos": {
       let query = supabase.from("custos").select("*").order("data_vencimento", { ascending: false }).limit(args.limit || 10);
