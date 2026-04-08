@@ -55,7 +55,19 @@ const AIChatWidget: React.FC<AIChatWidgetProps> = ({ onOpenServiceForm }) => {
         return;
       }
 
-      setMessages(prev => [...prev, { role: 'assistant', content: data.content || 'Desculpe, não consegui gerar uma resposta.' }]);
+      const content = data.content || 'Desculpe, não consegui gerar uma resposta.';
+      
+      // Check if the response contains an action to open a form
+      if (data.action === 'open_service_form' || content.includes('__OPEN_SERVICE_FORM__')) {
+        if (onOpenServiceForm) {
+          onOpenServiceForm();
+          setMessages(prev => [...prev, { role: 'assistant', content: '✅ Abrindo o formulário de cadastro de serviço...' }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', content: content.replace('__OPEN_SERVICE_FORM__', '') }]);
+        }
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content }]);
+      }
     } catch (e: any) {
       console.error('Chat error:', e);
       toast.error('Erro ao conectar com o assistente. Tente novamente.');
