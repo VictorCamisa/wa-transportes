@@ -626,6 +626,46 @@ const Tutorial: React.FC = () => {
               </Button>
             </div>
 
+            {/* GIF Preview */}
+            <Card className="mb-5 border-blue-100 bg-blue-50/40">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-blue-700 flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  Demonstração Visual
+                </CardTitle>
+                <CardDescription>
+                  Veja o módulo em ação — gerado automaticamente pelo sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg overflow-hidden border border-blue-200 bg-white shadow-sm">
+                  <img
+                    src={`/tutorial-gifs/${active.id}.gif`}
+                    alt={`Demonstração: ${active.label}`}
+                    className="w-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <div
+                    className="hidden items-center justify-center flex-col gap-3 py-12 text-center"
+                    style={{ display: 'none' }}
+                  >
+                    <Download className="h-8 w-8 text-blue-300" />
+                    <div>
+                      <p className="font-medium text-gray-600 text-sm">GIF ainda não gerado</p>
+                      <p className="text-gray-400 text-xs mt-1">
+                        Execute <code className="bg-gray-100 px-1 rounded">npm run tutorial:gifs</code> para gerar
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Description */}
             <Card className="mb-5 border-gray-200">
               <CardHeader className="pb-2">
