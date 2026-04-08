@@ -626,22 +626,36 @@ const Tutorial: React.FC = () => {
               </Button>
             </div>
 
-            {/* Module Visual Header */}
-            <Card className="mb-5 border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50">
-              <CardContent className="pt-6 pb-6">
-                <div className="flex items-center gap-5">
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100">
-                    {React.createElement(active.icon, { className: 'h-12 w-12 text-blue-600' })}
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-1">{active.label}</h2>
-                    <p className="text-sm text-gray-500 leading-relaxed max-w-md">
-                      {active.description.split('.')[0]}.
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge className={`text-xs border ${active.badgeClass}`}>{active.group}</Badge>
-                      <span className="text-xs text-gray-400">{active.features.length} funcionalidades · {active.steps.length} passos</span>
-                    </div>
+            {/* GIF Preview */}
+            <Card className="mb-5 border-blue-100 bg-blue-50/40">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-blue-700 flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  Demonstração Visual
+                </CardTitle>
+                <CardDescription>
+                  Veja o módulo em ação — screencast real do sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg overflow-hidden border border-blue-200 bg-white shadow-sm">
+                  <img
+                    src={`/tutorial-gifs/${active.id}.gif`}
+                    alt={`Demonstração: ${active.label}`}
+                    className="w-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <div
+                    className="items-center justify-center flex-col gap-3 py-12 text-center"
+                    style={{ display: 'none' }}
+                  >
+                    <Eye className="h-8 w-8 text-blue-300" />
+                    <p className="font-medium text-gray-600 text-sm">Demonstração indisponível</p>
                   </div>
                 </div>
               </CardContent>
