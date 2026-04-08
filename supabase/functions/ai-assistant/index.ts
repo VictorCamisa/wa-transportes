@@ -32,23 +32,12 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "criar_servico",
-      description: "Cria um novo serviço de transporte. Requer pelo menos a empresa.",
+      name: "abrir_formulario_servico",
+      description: "Abre o formulário de cadastro de serviço para o usuário preencher. Use sempre que o usuário quiser criar/cadastrar um novo serviço. NÃO peça os dados por texto, sempre abra o formulário.",
       parameters: {
         type: "object",
-        properties: {
-          empresa: { type: "string", description: "Nome da empresa cliente (obrigatório)" },
-          servico: { type: "string", description: "Descrição do serviço" },
-          cidade: { type: "string", description: "Cidade de destino" },
-          motorista: { type: "string", description: "Nome do motorista" },
-          veiculo: { type: "string", description: "Placa ou descrição do veículo" },
-          valor_texto: { type: "string", description: "Valor do serviço em texto (ex: R$ 1.500,00)" },
-          valor_numerico: { type: "number", description: "Valor numérico do serviço" },
-          solicitante: { type: "string", description: "Nome do solicitante" },
-          data_servico: { type: "string", description: "Data do serviço (YYYY-MM-DD). Se não informada, usa a data atual." },
-          status: { type: "string", description: "Status inicial: pendente, em_andamento, concluido" },
-        },
-        required: ["empresa"],
+        properties: {},
+        required: [],
       },
     },
   },
