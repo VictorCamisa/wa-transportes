@@ -192,6 +192,7 @@ Regras:
     ];
 
     // Loop for tool calling (max 3 iterations)
+    let pendingAction: string | null = null;
     for (let i = 0; i < 3; i++) {
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
