@@ -10,10 +10,14 @@ interface Message {
   content: string;
 }
 
-const AIChatWidget: React.FC = () => {
+interface AIChatWidgetProps {
+  onOpenServiceForm?: () => void;
+}
+
+const AIChatWidget: React.FC<AIChatWidgetProps> = ({ onOpenServiceForm }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Olá! 👋 Sou o assistente da **W&A Transportes**. Posso ajudar com:\n\n- 📋 Consultar serviços, custos e empresas\n- ➕ Criar novos serviços\n- ❓ Tirar dúvidas sobre o sistema\n\nComo posso ajudar?' },
+    { role: 'assistant', content: 'Olá! 👋 Sou o assistente da **W&A Transportes**. Posso ajudar com:\n\n- 📋 Consultar serviços, custos e empresas\n- ➕ Criar novos serviços (abrindo o formulário)\n- ❓ Tirar dúvidas sobre o sistema\n\nComo posso ajudar?' },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,7 +55,19 @@ const AIChatWidget: React.FC = () => {
         return;
       }
 
-      setMessages(prev => [...prev, { role: 'assistant', content: data.content || 'Desculpe, não consegui gerar uma resposta.' }]);
+      const content = data.content || 'Desculpe, não consegui gerar uma resposta.';
+      
+      // Check if the response contains an action to open a form
+      if (data.action === 'open_service_form' || content.includes('__OPEN_SERVICE_FORM__')) {
+        if (onOpenServiceForm) {
+          onOpenServiceForm();
+          setMessages(prev => [...prev, { role: 'assistant', content: '✅ Abrindo o formulário de cadastro de serviço...' }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', content: content.replace('__OPEN_SERVICE_FORM__', '') }]);
+        }
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content }]);
+      }
     } catch (e: any) {
       console.error('Chat error:', e);
       toast.error('Erro ao conectar com o assistente. Tente novamente.');

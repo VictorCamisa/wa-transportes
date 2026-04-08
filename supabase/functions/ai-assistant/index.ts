@@ -32,23 +32,12 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "criar_servico",
-      description: "Cria um novo serviço de transporte. Requer pelo menos a empresa.",
+      name: "abrir_formulario_servico",
+      description: "Abre o formulário de cadastro de serviço para o usuário preencher. Use sempre que o usuário quiser criar/cadastrar um novo serviço. NÃO peça os dados por texto, sempre abra o formulário.",
       parameters: {
         type: "object",
-        properties: {
-          empresa: { type: "string", description: "Nome da empresa cliente (obrigatório)" },
-          servico: { type: "string", description: "Descrição do serviço" },
-          cidade: { type: "string", description: "Cidade de destino" },
-          motorista: { type: "string", description: "Nome do motorista" },
-          veiculo: { type: "string", description: "Placa ou descrição do veículo" },
-          valor_texto: { type: "string", description: "Valor do serviço em texto (ex: R$ 1.500,00)" },
-          valor_numerico: { type: "number", description: "Valor numérico do serviço" },
-          solicitante: { type: "string", description: "Nome do solicitante" },
-          data_servico: { type: "string", description: "Data do serviço (YYYY-MM-DD). Se não informada, usa a data atual." },
-          status: { type: "string", description: "Status inicial: pendente, em_andamento, concluido" },
-        },
-        required: ["empresa"],
+        properties: {},
+        required: [],
       },
     },
   },
@@ -131,22 +120,8 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
       if (error) return JSON.stringify({ error: error.message });
       return JSON.stringify({ total: data?.length || 0, servicos: data });
     }
-    case "criar_servico": {
-      const record: any = {
-        empresa: args.empresa,
-        servico: args.servico || null,
-        cidade: args.cidade || null,
-        motorista: args.motorista || null,
-        veiculo: args.veiculo || null,
-        valor_texto: args.valor_texto || null,
-        valor_numerico: args.valor_numerico || null,
-        solicitante: args.solicitante || null,
-        data_servico: args.data_servico || new Date().toISOString().split("T")[0],
-        status: args.status || "pendente",
-      };
-      const { data, error } = await supabase.from("servicos").insert(record).select().single();
-      if (error) return JSON.stringify({ error: error.message });
-      return JSON.stringify({ sucesso: true, servico: data });
+    case "abrir_formulario_servico": {
+      return JSON.stringify({ action: "open_service_form" });
     }
     case "query_custos": {
       let query = supabase.from("custos").select("*").order("data_vencimento", { ascending: false }).limit(args.limit || 10);
@@ -198,14 +173,14 @@ serve(async (req) => {
 
 Você pode ajudar os usuários a:
 - Consultar serviços, custos, empresas, motoristas e veículos
-- Criar novos serviços de transporte
+- Criar novos serviços de transporte (abrindo o formulário)
 - Responder dúvidas sobre como usar o sistema
 - Fornecer resumos e relatórios rápidos
 
 Regras:
 - Sempre responda em português brasileiro
 - Seja conciso e objetivo
-- Ao criar serviços, confirme os dados com o usuário antes de executar
+- IMPORTANTE: Quando o usuário quiser criar/cadastrar um serviço, SEMPRE use a ferramenta abrir_formulario_servico para abrir o formulário. NUNCA peça os dados por texto.
 - Formate valores monetários como R$ X.XXX,XX
 - Formate datas como DD/MM/YYYY
 - Use markdown para formatar respostas quando apropriado (listas, negrito, etc)
@@ -217,6 +192,7 @@ Regras:
     ];
 
     // Loop for tool calling (max 3 iterations)
+    let pendingAction: string | null = null;
     for (let i = 0; i < 3; i++) {
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -260,7 +236,7 @@ Regras:
 
       // If no tool calls, return the final text
       if (!msg.tool_calls || msg.tool_calls.length === 0) {
-        return new Response(JSON.stringify({ content: msg.content }), {
+        return new Response(JSON.stringify({ content: msg.content, ...(pendingAction ? { action: pendingAction } : {}) }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -272,6 +248,13 @@ Regras:
         const args = typeof tc.function.arguments === "string" ? JSON.parse(tc.function.arguments) : tc.function.arguments;
         console.log(`Tool call: ${tc.function.name}`, args);
         const result = await executeTool(tc.function.name, args);
+        
+        // Check if tool result contains an action
+        try {
+          const parsed = JSON.parse(result);
+          if (parsed.action) pendingAction = parsed.action;
+        } catch {}
+        
         allMessages.push({
           role: "tool",
           tool_call_id: tc.id,
