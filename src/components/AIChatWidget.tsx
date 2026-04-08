@@ -17,7 +17,7 @@ interface AIChatWidgetProps {
 const AIChatWidget: React.FC<AIChatWidgetProps> = ({ onOpenServiceForm }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Olá! 👋 Sou o assistente da **W&A Transportes**. Posso ajudar com:\n\n- 📋 Consultar serviços, custos e empresas\n- ➕ Criar novos serviços\n- ❓ Tirar dúvidas sobre o sistema\n\nComo posso ajudar?' },
+    { role: 'assistant', content: 'Olá! 👋 Sou o assistente da **W&A Transportes**. Posso ajudar com:\n\n- 📋 Consultar serviços, custos e empresas\n- ➕ Criar novos serviços (abrindo o formulário)\n- ❓ Tirar dúvidas sobre o sistema\n\nComo posso ajudar?' },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
