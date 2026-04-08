@@ -10,7 +10,7 @@ import {
   ChevronDown, Settings, BookOpen,
 } from 'lucide-react';
 import UsersManagement from '@/components/dashboard/UsersManagement';
-import TutorialButton from '@/components/tutorial/TutorialButton';
+import AIChatWidget from '@/components/AIChatWidget';
 import SettingsPage from '@/components/dashboard/SettingsPage';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -378,7 +378,7 @@ const Dashboard = () => {
       <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
         {isCostFormOpen && <CostForm onClose={() => setIsCostFormOpen(false)} />}
       </Dialog>
-      <TutorialButton />
+      <AIChatWidget />
     </div>
   );
 };
