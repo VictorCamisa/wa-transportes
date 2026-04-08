@@ -7,9 +7,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Plus, TrendingUp, Users, DollarSign, FileText, Truck, Calendar,
   Menu, LogOut, Home, UserCheck, Car, MapPin, LayoutDashboard, Building2,
-  ChevronDown, Settings,
+  ChevronDown, Settings, BookOpen,
 } from 'lucide-react';
 import UsersManagement from '@/components/dashboard/UsersManagement';
+import TutorialButton from '@/components/tutorial/TutorialButton';
 import SettingsPage from '@/components/dashboard/SettingsPage';
 import { useServicesKPI } from '@/hooks/useServicesKPI';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -50,6 +51,7 @@ const NAV_GROUPS = [
     label: 'Geral',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: 'dashboard_view' },
+      { id: 'tutorial', label: 'Tutorial', icon: BookOpen, permission: 'dashboard_view' },
     ],
   },
   {
@@ -218,6 +220,7 @@ const Dashboard = () => {
       case 'mapa':           return <LiveMap />;
       case 'users':          return <UsersManagement />;
       case 'configuracoes':  return <SettingsPage />;
+      case 'tutorial':       { navigate('/tutorial'); return null; }
       default:               return null;
     }
   };
@@ -375,6 +378,7 @@ const Dashboard = () => {
       <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
         {isCostFormOpen && <CostForm onClose={() => setIsCostFormOpen(false)} />}
       </Dialog>
+      <TutorialButton />
     </div>
   );
 };

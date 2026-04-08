@@ -14,6 +14,7 @@ import BackupEmergencia from "./pages/BackupEmergencia";
 import NotFound from "./pages/NotFound";
 import MotoristaApp from "./pages/MotoristaApp";
 import ClientPortal from "./pages/ClientPortal";
+import Tutorial from "./pages/Tutorial";
 import React from "react";
 
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="/backup-emergencia/:key?" element={<BackupEmergencia />} />
               <Route path="/motorista" element={<MotoristaApp />} />
               <Route path="/portal" element={<ClientPortal />} />
+              <Route path="/tutorial" element={<Tutorial />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
