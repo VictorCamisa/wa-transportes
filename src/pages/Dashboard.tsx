@@ -378,7 +378,7 @@ const Dashboard = () => {
       <Dialog open={isCostFormOpen} onOpenChange={setIsCostFormOpen}>
         {isCostFormOpen && <CostForm onClose={() => setIsCostFormOpen(false)} />}
       </Dialog>
-      <AIChatWidget />
+      <AIChatWidget onOpenServiceForm={() => setIsServiceFormOpen(true)} />
     </div>
   );
 };
