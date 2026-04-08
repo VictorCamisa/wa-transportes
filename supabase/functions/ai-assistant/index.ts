@@ -235,7 +235,7 @@ Regras:
 
       // If no tool calls, return the final text
       if (!msg.tool_calls || msg.tool_calls.length === 0) {
-        return new Response(JSON.stringify({ content: msg.content }), {
+        return new Response(JSON.stringify({ content: msg.content, ...(pendingAction ? { action: pendingAction } : {}) }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -247,6 +247,13 @@ Regras:
         const args = typeof tc.function.arguments === "string" ? JSON.parse(tc.function.arguments) : tc.function.arguments;
         console.log(`Tool call: ${tc.function.name}`, args);
         const result = await executeTool(tc.function.name, args);
+        
+        // Check if tool result contains an action
+        try {
+          const parsed = JSON.parse(result);
+          if (parsed.action) pendingAction = parsed.action;
+        } catch {}
+        
         allMessages.push({
           role: "tool",
           tool_call_id: tc.id,
