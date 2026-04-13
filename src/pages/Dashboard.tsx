@@ -51,7 +51,6 @@ const NAV_GROUPS = [
     label: 'Geral',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: 'dashboard_view' },
-      { id: 'tutorial', label: 'Tutorial', icon: BookOpen, permission: 'dashboard_view' },
     ],
   },
   {
@@ -78,6 +77,12 @@ const NAV_GROUPS = [
       { id: 'veiculos',       label: 'Veículos',           icon: Car,           permission: 'users_manage' },
       { id: 'users',          label: 'Usuários',           icon: Users,         permission: 'users_manage' },
       { id: 'configuracoes',  label: 'Configurações',      icon: Settings,      permission: 'users_manage' },
+    ],
+  },
+  {
+    label: 'Ajuda',
+    items: [
+      { id: 'tutorial',       label: 'Tutorial',           icon: BookOpen,      permission: 'dashboard_view' },
     ],
   },
 ];
