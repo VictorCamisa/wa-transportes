@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { 
   Search, Plus, UserCog, Mail, Calendar, Shield, 
-  MoreHorizontal, ChevronRight, Users, UserCheck, UserX, Trash2 
+  MoreHorizontal, ChevronRight, Users, UserCheck, UserX, Trash2, Eye, EyeOff, Key
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +26,7 @@ interface UserWithPermissions {
   phone?: string;
   position?: string;
   avatar_url?: string;
+  initial_password?: string;
   user_permissions: { permission: string }[];
   user_roles?: { role: string }[];
 }
@@ -38,6 +39,7 @@ const UsersManagement = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users-management'],
@@ -45,7 +47,7 @@ const UsersManagement = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          id, username, email, created_at, status, phone, position, avatar_url,
+          id, username, email, created_at, status, phone, position, avatar_url, initial_password,
           user_permissions ( permission ),
           user_roles ( role )
         `)
@@ -241,11 +243,31 @@ const UsersManagement = () => {
                           {userStatus === 'active' ? 'Ativo' : 'Inativo'}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 mt-1">
+                      <div className="flex items-center gap-4 mt-1 flex-wrap">
                         <span className="text-sm text-slate-500 flex items-center gap-1">
                           <Mail className="h-3 w-3" />
                           {user.email}
                         </span>
+                        {user.initial_password && isAdmin && (
+                          <span className="text-sm text-slate-500 flex items-center gap-1">
+                            <Key className="h-3 w-3" />
+                            {visiblePasswords.has(user.id) ? user.initial_password : '••••••'}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setVisiblePasswords(prev => {
+                                  const next = new Set(prev);
+                                  if (next.has(user.id)) next.delete(user.id);
+                                  else next.add(user.id);
+                                  return next;
+                                });
+                              }}
+                              className="ml-1 hover:text-slate-700"
+                            >
+                              {visiblePasswords.has(user.id) ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                            </button>
+                          </span>
+                        )}
                         {user.position && (
                           <span className="text-sm text-slate-500 flex items-center gap-1">
                             <UserCog className="h-3 w-3" />
