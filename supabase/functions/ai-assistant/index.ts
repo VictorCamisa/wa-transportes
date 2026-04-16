@@ -216,9 +216,9 @@ Regras:
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-        if (status === 402) {
-          return new Response(JSON.stringify({ error: "Créditos de IA esgotados." }), {
-            status: 402,
+        if (status === 402 || status === 401) {
+          return new Response(JSON.stringify({ error: "Erro de autenticação com a API OpenAI. Verifique a chave." }), {
+            status: status,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
