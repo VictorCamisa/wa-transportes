@@ -42,8 +42,8 @@ const UsersManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users-management'],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from('profiles') as any)
+      const { data, error } = await supabase
+        .from('profiles')
         .select(`
           id, username, email, created_at, status, phone, position, avatar_url,
           user_permissions ( permission ),
@@ -52,7 +52,7 @@ const UsersManagement = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as UserWithPermissions[];
+      return data as unknown as UserWithPermissions[];
     }
   });
 
