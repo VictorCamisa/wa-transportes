@@ -286,6 +286,13 @@ const UsersManagement = () => {
                                 <><UserCheck className="h-4 w-4 mr-2" />Ativar</>
                               )}
                             </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-red-600 focus:text-red-600"
+                              onClick={e => { e.stopPropagation(); setDeleteUserId(user.id); }}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Excluir usuário
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
