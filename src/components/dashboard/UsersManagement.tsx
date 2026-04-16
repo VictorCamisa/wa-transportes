@@ -36,6 +36,8 @@ const UsersManagement = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users-management'],
