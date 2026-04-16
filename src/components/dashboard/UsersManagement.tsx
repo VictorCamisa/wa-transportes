@@ -26,6 +26,7 @@ interface UserWithPermissions {
   phone?: string;
   position?: string;
   avatar_url?: string;
+  initial_password?: string;
   user_permissions: { permission: string }[];
   user_roles?: { role: string }[];
 }
@@ -38,6 +39,7 @@ const UsersManagement = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users-management'],
@@ -45,7 +47,7 @@ const UsersManagement = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          id, username, email, created_at, status, phone, position, avatar_url,
+          id, username, email, created_at, status, phone, position, avatar_url, initial_password,
           user_permissions ( permission ),
           user_roles ( role )
         `)
