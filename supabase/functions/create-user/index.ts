@@ -83,6 +83,15 @@ Deno.serve(async (req: Request) => {
 
     const newUserId = authData.user.id;
 
+    // Store initial password in profile
+    const { error: profileUpdateError } = await adminClient
+      .from("profiles")
+      .update({ initial_password: password })
+      .eq("id", newUserId);
+    if (profileUpdateError) {
+      console.error("Erro ao salvar senha inicial:", profileUpdateError);
+    }
+
     // Insert role if admin
     if (role === "admin") {
       const { error: roleError } = await adminClient

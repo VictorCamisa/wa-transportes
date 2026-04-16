@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { 
   Search, Plus, UserCog, Mail, Calendar, Shield, 
-  MoreHorizontal, ChevronRight, Users, UserCheck, UserX, Trash2 
+  MoreHorizontal, ChevronRight, Users, UserCheck, UserX, Trash2, Eye, EyeOff, Key
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
