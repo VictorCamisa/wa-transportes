@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
 const tools = [
   {
@@ -194,14 +194,14 @@ Regras:
     // Loop for tool calling (max 3 iterations)
     let pendingAction: string | null = null;
     for (let i = 0; i < 3; i++) {
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "gpt-4o-mini",
           messages: allMessages,
           tools,
           stream: false,
@@ -216,9 +216,9 @@ Regras:
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-        if (status === 402) {
-          return new Response(JSON.stringify({ error: "Créditos de IA esgotados." }), {
-            status: 402,
+        if (status === 402 || status === 401) {
+          return new Response(JSON.stringify({ error: "Erro de autenticação com a API OpenAI. Verifique a chave." }), {
+            status: status,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
