@@ -74,7 +74,7 @@ const UsersManagement = () => {
 
   const handleToggleStatus = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    const { error } = await (supabase.from('profiles') as any)
+    const { error } = await supabase.from('profiles')
       .update({ status: newStatus })
       .eq('id', userId);
     
@@ -83,6 +83,27 @@ const UsersManagement = () => {
     } else {
       toast({ title: `Usuário ${newStatus === 'active' ? 'ativado' : 'desativado'}` });
       refetch();
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deleteUserId) return;
+    setIsDeleting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { user_id: deleteUserId },
+      });
+      if (error || data?.error) {
+        toast({ title: data?.error || 'Erro ao excluir usuário', variant: 'destructive' });
+      } else {
+        toast({ title: 'Usuário excluído com sucesso' });
+        refetch();
+      }
+    } catch {
+      toast({ title: 'Erro ao excluir usuário', variant: 'destructive' });
+    } finally {
+      setIsDeleting(false);
+      setDeleteUserId(null);
     }
   };
 
