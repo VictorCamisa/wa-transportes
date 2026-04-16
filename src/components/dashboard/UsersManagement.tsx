@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { 
   Search, Plus, UserCog, Mail, Calendar, Shield, 
-  MoreHorizontal, ChevronRight, Users, UserCheck, UserX 
+  MoreHorizontal, ChevronRight, Users, UserCheck, UserX, Trash2 
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,12 +36,14 @@ const UsersManagement = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['users-management'],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from('profiles') as any)
+      const { data, error } = await supabase
+        .from('profiles')
         .select(`
           id, username, email, created_at, status, phone, position, avatar_url,
           user_permissions ( permission ),
@@ -49,7 +52,7 @@ const UsersManagement = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as UserWithPermissions[];
+      return data as unknown as UserWithPermissions[];
     }
   });
 
@@ -71,7 +74,7 @@ const UsersManagement = () => {
 
   const handleToggleStatus = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    const { error } = await (supabase.from('profiles') as any)
+    const { error } = await supabase.from('profiles')
       .update({ status: newStatus })
       .eq('id', userId);
     
@@ -80,6 +83,27 @@ const UsersManagement = () => {
     } else {
       toast({ title: `Usuário ${newStatus === 'active' ? 'ativado' : 'desativado'}` });
       refetch();
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deleteUserId) return;
+    setIsDeleting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { user_id: deleteUserId },
+      });
+      if (error || data?.error) {
+        toast({ title: data?.error || 'Erro ao excluir usuário', variant: 'destructive' });
+      } else {
+        toast({ title: 'Usuário excluído com sucesso' });
+        refetch();
+      }
+    } catch {
+      toast({ title: 'Erro ao excluir usuário', variant: 'destructive' });
+    } finally {
+      setIsDeleting(false);
+      setDeleteUserId(null);
     }
   };
 
@@ -262,6 +286,13 @@ const UsersManagement = () => {
                                 <><UserCheck className="h-4 w-4 mr-2" />Ativar</>
                               )}
                             </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-red-600 focus:text-red-600"
+                              onClick={e => { e.stopPropagation(); setDeleteUserId(user.id); }}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Excluir usuário
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
@@ -274,6 +305,29 @@ const UsersManagement = () => {
           })}
         </div>
       )}
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={!!deleteUserId} onOpenChange={(open) => !open && setDeleteUserId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir usuário</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita. 
+              Todos os dados, permissões e documentos serão removidos permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteUser} 
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting ? 'Excluindo...' : 'Excluir'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
