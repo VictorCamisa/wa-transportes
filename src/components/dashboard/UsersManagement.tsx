@@ -243,11 +243,31 @@ const UsersManagement = () => {
                           {userStatus === 'active' ? 'Ativo' : 'Inativo'}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 mt-1">
+                      <div className="flex items-center gap-4 mt-1 flex-wrap">
                         <span className="text-sm text-slate-500 flex items-center gap-1">
                           <Mail className="h-3 w-3" />
                           {user.email}
                         </span>
+                        {user.initial_password && isAdmin && (
+                          <span className="text-sm text-slate-500 flex items-center gap-1">
+                            <Key className="h-3 w-3" />
+                            {visiblePasswords.has(user.id) ? user.initial_password : '••••••'}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setVisiblePasswords(prev => {
+                                  const next = new Set(prev);
+                                  if (next.has(user.id)) next.delete(user.id);
+                                  else next.add(user.id);
+                                  return next;
+                                });
+                              }}
+                              className="ml-1 hover:text-slate-700"
+                            >
+                              {visiblePasswords.has(user.id) ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                            </button>
+                          </span>
+                        )}
                         {user.position && (
                           <span className="text-sm text-slate-500 flex items-center gap-1">
                             <UserCog className="h-3 w-3" />
